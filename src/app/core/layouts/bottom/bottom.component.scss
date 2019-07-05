@@ -1,8 +1,31 @@
 :host {
-  outline: 1px solid black;
   grid-row: 3;
 }
 
 .footer {
   display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  padding-top: 2px;
+  ul {
+    grid-row: 1;
+    justify-self: center;
+    li {
+      display: inline;
+      margin-right: 17px;
+      a {
+        font-weight: 500;
+        font-size: 20px;
+        text-decoration: none;
+        &:hover {
+          background-color: red;
+        }
+      }
+    }
+  }
+  p {
+    grid-row: 2;
+    padding-top: 5px;
+    justify-self: center;
+  }  
 }
