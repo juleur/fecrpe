@@ -1,0 +1,47 @@
+:host {
+  grid-row: 2;
+}
+
+.login__grid {
+  display: grid;
+  place-content: center center;
+  outline: 1px solid rebeccapurple;
+}
+
+.login__form {
+  place-self: center center;
+  outline: 1px solid royalblue;
+  display: grid;
+  grid-template-rows: 2;
+}
+
+.email__field {
+  grid-row: 1;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.password__field {
+  grid-row: 2;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.button__field {
+  grid-row: 3;
+  display: grid;
+  label {
+    justify-self: center;
+  }
+}
+
+input[type=email], input[type=password] {
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
