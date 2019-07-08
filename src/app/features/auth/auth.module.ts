@@ -12,10 +12,11 @@ import { SignupComponent } from './signup/signup.component';
     LoginComponent, SignupComponent
   ],
   imports: [
-    CommonModule, AuthRoutingModule, FormsModule, ReactiveFormsModule,
+    CommonModule, AuthRoutingModule,
+    ReactiveFormsModule, FormsModule,
   ],
   exports: [
-    FormsModule, ReactiveFormsModule,
+    LoginComponent, SignupComponent
   ]
 })
 export class AuthModule { }

@@ -13,6 +13,21 @@
   outline: 1px solid royalblue;
   display: grid;
   grid-template-rows: 2;
+  width: 450px;
+  label {
+    font-size: 1.2em;
+  }
+  .btn-login {
+    margin: 25px 0 25px 0;
+    height: 50px;
+    width: 200px;
+    place-self: center center;
+    border: none;
+    color: bisque;
+    background-color: black;
+    border-radius: 6px;
+    font-size: 16px;
+  }
 }
 
 .email__field {

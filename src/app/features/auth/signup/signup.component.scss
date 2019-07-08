@@ -1,0 +1,78 @@
+:host {
+  grid-row: 2;
+}
+
+.register__grid {
+  display: grid;
+  place-content: center center;
+  outline: 1px solid rebeccapurple;
+}
+
+.register__form {
+  place-self: center center;
+  outline: 1px solid royalblue;
+  display: grid;
+  grid-template-rows: 2;
+  width: 550px;
+  label {
+    font-size: 1.2em;
+  }
+  .btn-register {
+    margin: 25px 0 25px 0;
+    height: 50px;
+    width: 200px;
+    place-self: center center;
+    border: none;
+    color: bisque;
+    background-color: black;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+}
+
+.email__field {
+  grid-row: 1;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.username__field {
+  grid-row: 2;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.password__field {
+  grid-row: 3;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.cpassword__field {
+  grid-row: 4;
+  display: grid;
+  label {
+    justify-self: center;    
+  }
+}
+
+.button__field {
+  grid-row: 5;
+  display: grid;
+  label {
+    justify-self: center;
+  }
+}
+
+input[type=email], input[type=text], input[type=password] {
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}

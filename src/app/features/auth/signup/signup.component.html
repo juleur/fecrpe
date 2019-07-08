@@ -1,1 +1,30 @@
-<p>signup works!</p>
+<div class="register__grid">
+  <h1>S'enregistrer</h1>
+  <div class="register__form">
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <div class="email__field">
+        <label for="email">Email</label>
+        <input type="email" formControlName="email">
+      </div>
+
+      <div class="username__field">
+        <label for="username">Pseudo</label>
+        <input type="text" formControlName="username">
+      </div>
+
+      <div class="password__field">
+        <label for="password">Mot De Passe</label>
+        <input type="password" formControlName="password">
+      </div>
+
+      <div class="cpassword__field">
+        <label for="cpassword">Confirmation Mot De Passe</label>
+        <input type="password" formControlName="c_password">
+      </div>
+
+      <div class="button__field">
+        <button class="btn-register" [disabled]="!registerForm.valid">S'enregister</button>
+      </div>
+    </form>
+  </div>
+</div>
