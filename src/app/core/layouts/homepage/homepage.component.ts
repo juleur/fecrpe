@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'apollo-link';
+import { of } from 'zen-observable';
 
 @Component({
   selector: 'homepage',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomepageComponent implements OnInit {
-
+  totalHours$: Observable<number>;
+  subjects$: Observable<string[]>;
+  
   constructor() { }
 
   ngOnInit() {
+    this.totalHours$ = Observable.of<number>(500);
+    this.subjects$ = Observable.of<string[]>(
+      ['Maths', 'Français', 'Economie']
+    );
   }
-
 }
