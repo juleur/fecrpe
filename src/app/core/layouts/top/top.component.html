@@ -7,21 +7,21 @@
   
   <div class="right_menu">
     <span>
-      <a [routerLink]="['/']">Mes Cours</a>
+      <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
     </span>
     <span>
-      <a [routerLink]="['/']">Profils</a>
+      <a [routerLink]="['/u/mon-profil']">Profils</a>
     </span>
   
     <!-- <span>
-      <a [routerLink]="['/']">Se Connecter</a>
+      <a [routerLink]="['/auth/login']">Se Connecter</a>
     </span> -->
     <!-- <span>
-      <a [routerLink]="['/']">S'enregistrer</a>
+      <a [routerLink]="['/auth/signup']">S'enregistrer</a>
     </span> -->
   
     <span>
-      <a [routerLink]="['/']">Se Deconnecter</a>
+      <a [routerLink]="['/']" (click)="onLogout()">Se Deconnecter</a>
     </span>
   </div>
   

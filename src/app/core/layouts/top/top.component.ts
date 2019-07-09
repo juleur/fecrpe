@@ -12,4 +12,7 @@ export class TopComponent implements OnInit {
   ngOnInit() {
   }
 
+  onLogout(): void {
+    console.log('logout');
+  }
 }

@@ -10,6 +10,7 @@
   h1 {
     grid-column: 1/-1;
     grid-row: 1;
+    font-size: 48px;
     place-self: center center;
     padding: 20px 1px 20px 1px;
     text-align: center;
@@ -54,12 +55,13 @@
    
     display: grid;
     grid-template-columns: repeat(auto-fit, 330px);
+    grid-template-rows: auto;
     justify-content: center;
 
     gap: 30px 60px;
     div {
       p {
-        height: 150px;
+        // height: 150px;
         padding: 1.5rem;
         border-radius: 7px;
         background-color: #f9f9ff;
