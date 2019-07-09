@@ -1,0 +1,20 @@
+<div class="login__grid">
+  <h1>Connexion</h1>
+  <div class="login__form">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <div class="email__field">
+        <label for="email">Email</label>
+        <input type="email" formControlName="email">
+      </div>
+
+      <div class="password__field">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password">
+      </div>
+
+      <div class="button__field">
+        <button class="btn-login" [disabled]="!loginForm.valid">Se Connecter</button>
+      </div>
+    </form>
+  </div>
+</div>
