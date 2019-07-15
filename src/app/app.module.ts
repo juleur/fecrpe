@@ -5,16 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { CoreModule } from './core/core.module';
 import { GraphQLModule } from './graphql.module';
 
-import { CoreModule } from './core/core.module';
-
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
-    BrowserModule, AppRoutingModule, GraphQLModule, HttpClientModule, CoreModule,
+    BrowserModule, AppRoutingModule, GraphQLModule,
+    HttpClientModule, CoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

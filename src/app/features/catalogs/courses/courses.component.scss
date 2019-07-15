@@ -4,12 +4,42 @@
 
 .grid__courses {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  justify-items: center;
+  row-gap: 20px;
 }
 
-.gelm {
-  width: 400px;
-  height: 400px;
-  background-color: aqua;
-  outline: 1px solid red;
+.gcourse {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  grid-template-rows: 200px 40px 40px 40px;
+}
+
+.img_gcourse {
+  grid-column: 1/-1;
+  grid-row: 1;
+}
+
+.subject__gsource {
+  grid-column: 1/-1;
+  grid-row: 2;
+  background-color: red;
+  > p {
+    // background-color: yellow;
+  }
+}
+
+.title__gsource {
+  grid-column: 1/-1;
+  grid-row: 3;  
+}
+
+.teacher__gsource {
+  grid-column: 1/3;
+  grid-row: 4;  
+}
+
+.likes__gsource {
+  grid-column: auto;
+  grid-row: 4;  
 }

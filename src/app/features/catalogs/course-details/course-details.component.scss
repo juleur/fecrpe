@@ -1,3 +1,55 @@
 :host {
   grid-row: 2;
 }
+.cdetails__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-rows: repeat(4, auto);
+  justify-content: center;
+}
+.cdetails__title {
+  grid-column: 1/-1;
+  grid-row: 1;
+  font-size: 34px;
+  justify-self: center;
+}
+.cdetails__description {
+  grid-column: 1/-1;
+  grid-row: 2;
+  font-size: 20px;
+  justify-self: center;
+  padding: 0 10px 0 10px;
+}
+.cdetails__ttsession {
+  justify-self: center;
+  font-size: 19px;
+}
+.cdetails__teacher {
+  justify-self: center;
+  font-size: 17px;
+  font-style: italic;
+}
+.cdetails__year {
+  justify-self: center;
+  font-size: 19px;
+}
+.cdetails__vlist {
+  grid-column: 1/-1;
+  grid-row: auto;
+  
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 3px 3px;
+  > div {
+    height: 175px;
+  }
+  .blurred {
+    filter: blur(3px);
+  }
+  .pp {
+    grid-column: 1/-1;
+    grid-row: 2;
+    padding: 0 4px 0 4px;
+    text-align: center;
+  }
+}
