@@ -1,3 +1,14 @@
 :host {
   grid-row: 2;
 }
+
+.profil__grid {
+  display: grid;
+  place-content: center center;
+}
+
+.profil__form {
+  display: grid;
+  grid-template-rows: 2;
+  width: 425px;
+}

@@ -1,1 +1,21 @@
-<p>profil works!</p>
+<div class="profil__grid">
+  <div class="profil__form">
+    <form [formGroup]="userForm" (ngSubmit)="onUpdateUser()">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" formControlName="email" type="text" id="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" formControlName="username" type="text" id="username" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot De Passe</label>
+        <input class="form-input" formControlName="password" type="password" id="password" placeholder="Mot De Passe">
+      </div>
+      <div class="button__field">
+        <button class="btn btn-success" [disabled]="!userForm.valid">S'enregister</button>
+      </div>
+    </form>
+  </div>
+</div>

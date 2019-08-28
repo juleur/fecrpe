@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { SignupGQL } from 'src/app/core/graphql/mutations/signup-gql';
 
 @Component({
   selector: 'signup',
@@ -9,7 +12,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class SignupComponent implements OnInit {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private signupGQL: SignupGQL) { }
 
   ngOnInit() {
     this.registerForm = this.fb.group({
@@ -21,6 +24,12 @@ export class SignupComponent implements OnInit {
   }
 
   onRegister(): void {
-    console.log(this.registerForm.value);
+    this.signupGQL.mutate({
+      email: this.registerForm.value.email,
+      username: this.registerForm.value.username,
+      password: this.registerForm.value.password
+    }).pipe(
+      catchError(err => of(err))
+    );
   }
 }
