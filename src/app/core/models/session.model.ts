@@ -1,11 +1,11 @@
 export interface Session {
-  id: number;
-  title: string;
+  id?: number;
+  title?: string;
   type?: any;
   description?: string;
-  part: boolean;
+  part?: boolean;
   recordedOn?: string;
   createdAt?: string;
   updatedAt?: string;
-  refresherCourseId: number;
+  refresherCourseId?: number;
 }
