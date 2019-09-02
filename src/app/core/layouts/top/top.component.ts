@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'top',
@@ -7,12 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopComponent implements OnInit {
 
-  constructor() { }
+  constructor(private auth: AuthService) { }
 
   ngOnInit() {
-  }
-
-  onLogout(): void {
-    console.log('logout');
   }
 }

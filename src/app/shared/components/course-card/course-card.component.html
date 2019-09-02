@@ -1,15 +1,15 @@
-<div class="card__img">
-  <img src="">
-</div>
-<div class="card__subject">
-  <span>Mathématique</span>
-</div>
-<div class="card__title">
-  <span>Title</span>
-</div>
-<div class="card__teacher">
-  <span>Mr Chermak</span>
-</div>
-<div class="card__likes">
-  <span>Likes</span>
-</div>
+<a class="link" [routerLink]="['/']">
+  <article class="card">
+    <img class="card__img" src="https://bahama-sun.com/wp-content/uploads/2018/05/Fond-bleu.jpg">
+    <div class="card__info">
+      <span class="card__category"> Année: 2019/2020</span>
+      <h3 class="card__title">Remise à niveau Mathématiques</h3>
+      <span class="card__by">
+        Par 
+        <a [routerLink]="['/']" class="card__author" title="author">
+          Mr Chermak
+        </a>
+      </span>
+    </div>
+  </article>
+</a>

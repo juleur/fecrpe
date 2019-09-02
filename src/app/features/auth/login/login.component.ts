@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginGQL } from 'src/app/core/graphql/queries/login-gql';
 import { CookieService } from '@gorniv/ngx-universal';
+import * as jwtDecode from 'jwt-decode';
 
 @Component({
   selector: 'login-form',
@@ -32,8 +33,10 @@ export class LoginComponent implements OnInit {
       pwd: this.loginForm.value.password,
     }).valueChanges.pipe(
       tap(res => {
-        this.cookie.putObject('jwt', res.data.jwt);
-        this.cookie.putObject('refresh_token', res.data.refreshToken);
+        this.cookie.putObject('jwt', res.data.jwt, {secure: true});
+        this.cookie.putObject('refresh_token', res.data.refreshToken, {secure: true});
+        this.cookie.putObject('user_id', jwtDecode(res.data.jwt)['sub']);
+        this.cookie.putObject('username', jwtDecode(res.data.jwt)['username']);
       }),
       catchError(err => of(err))
     );

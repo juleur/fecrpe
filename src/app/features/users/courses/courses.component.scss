@@ -1,3 +1,10 @@
 :host {
   grid-row: 2;
 }
+
+.grid__mycourses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  justify-items: center;
+  row-gap: 55px;
+}

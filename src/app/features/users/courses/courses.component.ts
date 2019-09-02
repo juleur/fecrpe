@@ -14,12 +14,8 @@ export class CoursesComponent implements OnInit {
   constructor(private myCoursesGQL: MyCoursesGQL) { }
 
   ngOnInit() {
-    this.myCoursesGQL
-                    .watch()
-                    .valueChanges
-                    .pipe(
-                      map(result => result.data)
-                    );
+    this.myCoursesGQL.watch().valueChanges.pipe(
+      map(result => result.data)
+    );
   }
-
 }
