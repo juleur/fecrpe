@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginGQL } from 'src/app/core/graphql/queries/login-gql';
-import { CookieService } from '@gorniv/ngx-universal';
-import * as jwtDecode from 'jwt-decode';
+import * as Cookies from 'js-cookie';
+import { AuthService } from 'src/app/core';
+import { Observable } from 'apollo-link';
 
 @Component({
   selector: 'login-form',
@@ -16,8 +17,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private loginGQL: LoginGQL,
-    private cookie: CookieService,
+    private auth: AuthService,
   ) { }
 
   ngOnInit() {
@@ -28,17 +28,6 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
-    this.loginGQL.watch({
-      email: this.loginForm.value.email,
-      pwd: this.loginForm.value.password,
-    }).valueChanges.pipe(
-      tap(res => {
-        this.cookie.putObject('jwt', res.data.jwt, {secure: true});
-        this.cookie.putObject('refresh_token', res.data.refreshToken, {secure: true});
-        this.cookie.putObject('user_id', jwtDecode(res.data.jwt)['sub']);
-        this.cookie.putObject('username', jwtDecode(res.data.jwt)['username']);
-      }),
-      catchError(err => of(err))
-    );
+    this.auth.login(this.loginForm);
   }
 }

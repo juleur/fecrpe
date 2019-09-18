@@ -2,12 +2,23 @@ import {NgModule} from '@angular/core';
 import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
+import { ApolloLink } from 'apollo-link';
+import * as cookies from 'js-cookie';
 
-const uri = 'https://o5x5jzoo7z.sse.codesandbox.io/graphql'; //our test Graphql Server which returns rates
+const authLink = new ApolloLink((operation, forward) => {
+  const jwt = cookies.get('jwt');
+  operation.setContext({
+    headers: {
+      Authorization: jwt ? `Bearer ${jwt}` : ''
+    }
+  });
+  return forward(operation);
+});
 
 export function createApollo(httpLink: HttpLink) {
+  const http = httpLink.create({uri: 'https://localhost:8080/graphql'});
   return {
-    link: httpLink.create({uri}),
+    link: authLink.concat(http),
     cache: new InMemoryCache(),
   };
 }

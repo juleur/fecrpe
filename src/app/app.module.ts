@@ -18,4 +18,4 @@ import { CookieModule } from '@gorniv/ngx-universal';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
