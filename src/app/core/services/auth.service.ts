@@ -31,9 +31,7 @@ export class AuthService {
   }
 
   getRefreshToken(refToken: string): Observable<Token> {
-    return this.refreshTokenGQL.mutate({
-      token: refToken,
-    }).pipe(
+    return this.refreshTokenGQL.mutate({token: refToken}).pipe(
       catchError(err => of(err))
     );
   }
