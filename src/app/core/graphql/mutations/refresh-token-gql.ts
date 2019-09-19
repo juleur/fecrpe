@@ -7,8 +7,8 @@ import gql from 'graphql-tag';
 })
 export class RefreshTokenGQL extends Mutation {
   document = gql`
-    mutation refreshToken($refreshToken: String!) {
-      refreshToken(refreshToken: $refreshToken) {
+    mutation refreshToken($token: String!) {
+      refreshToken(refreshToken: $token) {
         jwt
         refreshToken
       }

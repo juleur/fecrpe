@@ -30,9 +30,9 @@ export class AuthService {
     return this.jwtHelper.isTokenExpired();
   }
 
-  getRefreshToken(rfshToken: string): Observable<Token> {
+  getRefreshToken(refToken: string): Observable<Token> {
     return this.refreshTokenGQL.mutate({
-      refreshToken: rfshToken,
+      token: refToken,
     }).pipe(
       catchError(err => of(err))
     );

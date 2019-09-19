@@ -7,13 +7,12 @@ import { AppComponent } from './app.component';
 
 import { CoreModule } from './core/core.module';
 import { GraphQLModule } from './graphql.module';
-import { CookieModule } from '@gorniv/ngx-universal';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule, AppRoutingModule, GraphQLModule,
-    HttpClientModule, CoreModule, CookieModule.forRoot(),
+    HttpClientModule, CoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
