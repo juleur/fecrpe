@@ -12,7 +12,10 @@ import { SignupGQL } from 'src/app/core/graphql/mutations/signup-gql';
 export class SignupComponent implements OnInit {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private signupGQL: SignupGQL) { }
+  constructor(
+    private fb: FormBuilder,
+    private signupGQL: SignupGQL
+  ) { }
 
   ngOnInit() {
     this.registerForm = this.fb.group({

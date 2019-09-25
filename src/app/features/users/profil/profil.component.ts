@@ -18,7 +18,7 @@ export class ProfilComponent implements OnInit {
     private fb: FormBuilder,
     private myProfilGQL: MyProfilGQL,
     private updateProfilGQL: UpdateProfilGQL
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -27,7 +27,7 @@ export class ProfilComponent implements OnInit {
       password: ['', Validators.required],
     });
     this.myProfilGQL.watch().valueChanges.pipe(
-      tap(res => this.userForm.patchValue(res.data.updateUser)),
+      tap(res => this.userForm.patchValue(res.data.user)),
       catchError(err => of(err))
     );
   }
@@ -37,7 +37,7 @@ export class ProfilComponent implements OnInit {
     this.updateProfilGQL.mutate({
       userId: 14312545343
     }).pipe(
-      tap(res => this.userForm.patchValue(res.data.updateUser)),
+      tap(res => this.userForm.patchValue(res.data.user)),
       catchError(err => of(err))
     );
   }

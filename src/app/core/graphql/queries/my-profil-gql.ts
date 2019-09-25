@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { User } from '../../models';
+
+export interface Response {
+  user: User;
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class MyProfilGQL extends Query<any> {
+export class MyProfilGQL extends Query<Response> {
   document = gql`
     query myProfil($userId: Int!) {
       myProfil(userId: $userId) {

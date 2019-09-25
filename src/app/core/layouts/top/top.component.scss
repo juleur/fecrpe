@@ -9,6 +9,7 @@
   .logo {
     grid-column: 1;
     align-self: center;
+    margin-top: 20px;
     a {
       &:link {
         text-decoration: none;
@@ -36,34 +37,70 @@
       }
     }
   }
-  
-  .nav-icon {
-    grid-column: 3;
+  .toggle {
     visibility: hidden;
-    width: 55px;
-    padding-right: 15px;
-    padding-bottom: 17px;
-    &:after, &:before, div {
-      background-color: black;
-      border-radius: 3px;
-      content: '';
-      display: block;
-      height: 5px;
-      margin: 7px 0;
-      transition: all .2s ease-in-out;
-    }
-    &:hover {
-      &:before {
-        transform: translateY(12px) rotate(135deg);
-      }
-      &:after {
-        transform: translateY(-12px) rotate(-135deg);
-      }
-      div {
-        transform: scale(0);
+  }
+
+  .toggle {
+    text-decoration: none;
+    font-size: 4em;
+    color: rgba(0, 0, 0, 0.61);
+    -webkit-transition: all 0.15s ease-out 0;
+    -moz-transition: all 0.15s ease-out 0;
+    transition: all 0.45s ease-out 0;
+    position: fixed;
+    top: 2px;
+    right: 20px;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    right: -190px;
+    -webkit-transition: all 0.15s ease-out 0;
+    -moz-transition: all 0.15s ease-out 0;
+    transition: all 0.15s ease-out 0;
+    width: 8rem;
+    padding: 1.5em;
+    background: #19C4BC;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;  
+      li {
+        a {
+          color: #fff;
+          font-family: 'Poiret One', cursive;
+          font-size: 1.2em;
+          margin: 0;
+          margin-bottom: 16px;
+          cursor: pointer;
+          text-decoration: none;
+          line-height: 200%;
+          &:hover {
+            color: rgba(0, 0, 0, 0.61);      
+          }
+        } 
       }
     }
   }
+
+  #slide:checked + .container .sidebar {
+    right: 0px;
+    width: 200px;
+  }
+
+  #slide:checked + .container .toggle {
+    right: 200px;
+  }
+
+  #slide {
+    display: none;
+  }
+
 }
 
 @media only screen and (max-width: 480px) {
@@ -73,13 +110,14 @@
       grid-column: 1;
       align-self: center;
       margin-left: auto;
+      img {
+        margin-top: 5px;
+      }
     }
     .right_menu {
       visibility: hidden;
     }
-    .nav-icon {
-      align-self: center;
-      margin-left: 16px;
+    .toggle {
       visibility: visible;
     }
   }

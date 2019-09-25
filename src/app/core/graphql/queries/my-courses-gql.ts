@@ -3,7 +3,6 @@ import { Query } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { RefresherCourse } from '../../models';
 
-
 export interface Response {
   refresherCourses: RefresherCourse[];
 }

@@ -4,11 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { CoursesComponent } from './courses/courses.component';
 import { ProfilComponent } from './profil/profil.component';
 
-import { AuthUserGuard } from 'src/app/core/guards';
+import { LoggedInGuard } from 'src/app/core/guards/logged-in.guard';
 
 const routes: Routes = [
-  { path: 'mes-cours', component: CoursesComponent, canActivate: [AuthUserGuard] },
-  { path: 'mon-profil', component: ProfilComponent, canActivate: [AuthUserGuard] },
+  { path: 'mes-cours', component: CoursesComponent, canActivate: [LoggedInGuard] },
+  { path: 'mon-profil', component: ProfilComponent, canActivate: [LoggedInGuard] },
 ];
 
 @NgModule({

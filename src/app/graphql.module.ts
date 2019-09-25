@@ -3,10 +3,10 @@ import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
-import * as cookies from 'js-cookie';
+import * as Cookies from 'js-cookie';
 
 const authLink = new ApolloLink((operation, forward) => {
-  const jwt = cookies.get('jwt');
+  const jwt = Cookies.get('jwt');
   operation.setContext({
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : ''

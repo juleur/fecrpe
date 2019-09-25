@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { LoginGQL } from 'src/app/core/graphql/queries/login-gql';
-import * as Cookies from 'js-cookie';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from 'src/app/core';
-import { Observable } from 'apollo-link';
 
 @Component({
   selector: 'login-form',
@@ -14,11 +11,12 @@ import { Observable } from 'apollo-link';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  credStatus$: Observable<boolean>;
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-  ) { }
+    ) { }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -28,6 +26,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
-    this.auth.login(this.loginForm);
+    // For message status
+    this.credStatus$ = this.auth.login(this.loginForm.value);
   }
 }

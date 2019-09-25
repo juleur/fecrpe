@@ -1,6 +1,5 @@
-import { NgModule, Optional, SkipSelf, Component } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 
 import { throwIfAlreadyLoaded } from './guards/module-import.guard';
@@ -8,6 +7,9 @@ import { throwIfAlreadyLoaded } from './guards/module-import.guard';
 import { TopComponent } from './layouts/top/top.component';
 import { HomepageComponent } from './layouts/homepage/homepage.component';
 import { BottomComponent } from './layouts/bottom/bottom.component';
+
+import { MaterialModule } from './material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -18,13 +20,14 @@ const routes: Routes = [
     TopComponent, HomepageComponent, BottomComponent
   ],
   imports: [
-      CommonModule, RouterModule.forRoot(routes),
+    CommonModule, RouterModule.forRoot(routes),
+    MaterialModule, BrowserAnimationsModule
   ],
   exports: [
     RouterModule, TopComponent, HomepageComponent, BottomComponent
   ]
 })
-export class CoreModule { 
+export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
     throwIfAlreadyLoaded(parentModule, 'CoreModule');
   }

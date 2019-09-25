@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MyCoursesGQL } from 'src/app/core/graphql/queries/my-courses-gql';
-import { Observable } from 'apollo-link';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MyCoursesGQL } from 'src/app/core/graphql/queries/my-courses-gql';
+
+import { RefresherCourse } from './../../../core/models/refresher-course.model';
 
 @Component({
   selector: 'my-courses',
@@ -9,13 +11,16 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./courses.component.scss']
 })
 export class CoursesComponent implements OnInit {
-  refreshCourses$: Observable<any>;
+  refresherCourses$: Observable<RefresherCourse[]>;
 
-  constructor(private myCoursesGQL: MyCoursesGQL) { }
+  constructor(
+    private myCoursesGQL: MyCoursesGQL,
+  ) { }
 
   ngOnInit() {
-    this.myCoursesGQL.watch().valueChanges.pipe(
-      map(result => result.data)
-    );
+    this.refresherCourses$ = this.myCoursesGQL
+      .watch().valueChanges.pipe(
+        map(res => res.data.refresherCourses),
+      );
   }
 }

@@ -6,26 +6,50 @@
   </div>
   
   <div class="right_menu">
-    <span>
+    <span *ngIf="auth.isLoggedIn$ | async">
       <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
     </span>
-    <span>
+    <span *ngIf="auth.isLoggedIn$ | async">
       <a [routerLink]="['/u/mon-profil']">Profils</a>
     </span>
   
-    <!-- <span>
+    <span *ngIf="!(auth.isLoggedIn$ | async)">
       <a [routerLink]="['/auth/login']">Se Connecter</a>
-    </span> -->
-    <!-- <span>
+    </span>
+    <span *ngIf="!(auth.isLoggedIn$ | async)">
       <a [routerLink]="['/auth/signup']">S'enregistrer</a>
-    </span> -->
+    </span>
   
-    <span>
+    <span *ngIf="auth.isLoggedIn$ | async">
       <a [routerLink]="['/']" (click)="auth.onLogout()">Se Deconnecter</a>
     </span>
   </div>
   
-  <div class="nav-icon">
-    <div></div>
+  <div class="mobile_query">
+    <input type="checkbox" id="slide" name="" value="" />
+    <div class="container">
+      <label for="slide" class="toggle">☰</label>
+      <nav class="sidebar">
+        <ul>
+          <li *ngIf="auth.isLoggedIn$ | async">
+            <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
+          </li>
+          <li *ngIf="auth.isLoggedIn$ | async">
+            <a [routerLink]="['/u/mon-profil']">Profils</a>
+          </li>
+          <li *ngIf="!(auth.isLoggedIn$ | async)">
+            <a [routerLink]="['/auth/login']">Se Connecter</a>
+          </li>
+          <li *ngIf="!(auth.isLoggedIn$ | async)">
+            <a [routerLink]="['/auth/signup']">S'enregistrer</a>
+          </li>
+          <li *ngIf="auth.isLoggedIn$ | async">
+            <a [routerLink]="['/']" (click)="auth.onLogout()">Se Deconnecter</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
+
 </div>
+

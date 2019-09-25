@@ -8,12 +8,13 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { GraphQLModule } from './graphql.module';
 import { UserAuthInterceptor } from './core/interceptors/user-auth.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule, AppRoutingModule, GraphQLModule,
-    HttpClientModule, CoreModule,
+    HttpClientModule, CoreModule, BrowserAnimationsModule,
   ],
   providers: [
     {
