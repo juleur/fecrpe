@@ -1,19 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { CatalogsRoutingModule } from './catalogs-routing.module';
 
 import { CoursesComponent } from './courses/courses.component';
 import { CourseDetailsComponent } from './course-details/course-details.component';
-
-import { CourseCardComponent } from './../../shared/components/course-card/course-card.component';
+import { CourseCardComponent } from './courses/course-card/course-card.component';
 import { SessionPlayersComponent } from './session-players/session-players.component';
 
 @NgModule({
   declarations: [
     CoursesComponent, CourseDetailsComponent,
-    CourseCardComponent, SessionPlayersComponent
+    SessionPlayersComponent, CourseCardComponent
   ],
-  imports: [CommonModule, CatalogsRoutingModule]
+  imports: [
+    CommonModule, CatalogsRoutingModule, RouterModule,
+  ],
 })
 export class CatalogsModule { }

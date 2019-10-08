@@ -1,3 +1,5 @@
+import { RefresherCourse } from './refresher-course.model';
+
 export interface User {
   id?: number;
   username?: string;
@@ -8,4 +10,5 @@ export interface User {
   updatedAt?: string;
   jwt?: string;
   refreshToken?: string;
+  refresherCourses: RefresherCourse[];
 }

@@ -1,51 +1,29 @@
-<div class="cdetails__grid">
-  <span class="cdetails__title">Suite Numérique</span>
+<div class="cdetails__grid" *ngIf="refresherCourse$ | async as refresherCourse">
+  <span class="cdetails__title">{{ refresherCourse.title }}</span>
   <span class="cdetails__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae necessitatibus earum nam adipisci ex? Incidunt sed ad sapiente nobis earum quo explicabo hic aliquam, aperiam, debitis reiciendis iusto corporis perspiciatis.</span>
-  <span class="cdetails__year">2019->2020</span>
-  <span class="cdetails__teacher">Mr Chermak</span>
-  <span class="cdetails__ttsession">Heures Total: 246 h</span>
-  <div class="cdetails__vlist">
-    <ng-container *ngIf="courseBought$ | async; else buyNow">
-      <div>test</div>
-      <div>test</div>
-      <div>test</div>
-      <div>t</div>
-      <div>t</div>
-      <div>t</div>
-      <div>t</div>
-    </ng-container>
-    <ng-template #buyNow>
-      <div class="blurred">1</div>
-      <div class="blurred">2</div>
-      <div class="blurred">3</div>
-      <div class="blurred">4</div>
-      <div class="blurred">5</div>
-      <div class="blurred">6</div>
-      <div class="blurred">7</div>
-      <div class="blurred">8</div>
-      <div class="blurred">9</div>
-      <div class="blurred">10</div>
-      <div class="blurred">11</div>
-      <div class="blurred">12</div>
-      <div class="blurred">13</div>
-      <div class="blurred">14</div>
-      <div class="blurred">15</div>
-      <div class="blurred">16</div>
-      <div class="blurred">17</div>
-      <div class="blurred">18</div>
-      <div class="blurred">19</div>
-      <div class="blurred">20</div>
-      <div class="blurred">21</div>
-      <div class="blurred">22</div>
-      <div class="blurred">23</div>
-      <div class="blurred">24</div>
-      <div class="blurred">25</div>
-      <div class="blurred">26</div>
-      <div class="blurred">27</div>
-      <div class="blurred">28</div>
-      <div class="blurred">29</div>
-      <div class="blurred">30</div>
-      <div #paypal class="pp"></div>
-    </ng-template>    
+  <div class="cdetails__section">
+    <details>
+      <summary>Sommaire</summary>
+      <ng-container *ngFor="let s of refresherCourse.sessions">
+        <p class="cdetails__listcourses_group_list">{{s.type}}{{s.part}}: {{s.title}}</p>
+      </ng-container>      
+    </details>
+    <div class="cdetails__info">
+      <p class="cdetails__teacher">
+        <span>Professeur:</span> Mr Chermak
+      </p>
+      <p class="cdetails__year">
+        <span>Années:</span> {{ refresherCourse.year }}
+      </p>
+      <p class="cdetails__ttsession">
+        <span>Audiovisuel:</span> 246 heures
+      </p>
+      <ng-container *ngIf="auth.isLoggedIn(); else login">
+        <button class="buy">ACHETER</button>
+      </ng-container>
+      <ng-template #login>
+        <a class="connect" [routerLink]="['/auth/login']">SE CONNECTER</a>
+      </ng-template>      
+    </div>
   </div>
 </div>

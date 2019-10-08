@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { RefresherCourse } from 'src/app/core';
+import { RefresherCourse } from 'src/app/core/models/refresher-course.model';
 
 @Component({
   selector: 'course-card',

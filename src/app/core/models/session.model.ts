@@ -1,7 +1,12 @@
+export enum Type {
+  Lesson = 'Lesson',
+  Exercise = 'Exercise'
+}
+
 export interface Session {
   id?: number;
   title?: string;
-  type?: any;
+  type?: Type;
   description?: string;
   part?: boolean;
   recordedOn?: string;

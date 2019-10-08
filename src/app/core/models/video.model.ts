@@ -6,4 +6,5 @@ export interface Video {
   isEncoded?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  sessionId?: number;
 }

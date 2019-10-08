@@ -8,8 +8,6 @@ import { TopComponent } from './layouts/top/top.component';
 import { HomepageComponent } from './layouts/homepage/homepage.component';
 import { BottomComponent } from './layouts/bottom/bottom.component';
 
-import { MaterialModule } from './material.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -21,7 +19,6 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule, RouterModule.forRoot(routes),
-    MaterialModule, BrowserAnimationsModule
   ],
   exports: [
     RouterModule, TopComponent, HomepageComponent, BottomComponent
