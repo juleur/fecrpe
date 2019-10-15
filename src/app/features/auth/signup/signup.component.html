@@ -4,17 +4,17 @@
     <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
       <div class="email__field">
         <label for="email">Email</label>
-        <input type="email" formControlName="email">
+        <input type="email" class="email_input" formControlName="email">
       </div>
 
       <div class="username__field">
         <label for="username">Pseudo</label>
-        <input type="text" formControlName="username">
+        <input type="text" class="username_input" formControlName="username">
       </div>
 
       <div class="password__field">
         <label for="password">Mot De Passe</label>
-        <input type="password" formControlName="password">
+        <input type="password" class="password_input" formControlName="password">
       </div>
 
       <div class="cpassword__field">

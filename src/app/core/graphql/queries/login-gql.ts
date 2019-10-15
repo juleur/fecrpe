@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Query } from 'apollo-angular';
 import gql from 'graphql-tag';
 
-import { Token } from '../../models';
+import { Token, User } from '../../models';
 
 export interface Response {
   token: Token;
+  isTeacher: boolean;
 }
 
 @Injectable({
@@ -17,6 +18,7 @@ export class LoginGQL extends Query<Response> {
       auth(email: $email, pwd: $pwd) {
         jwt
         refreshToken
+        isTeacher
       }
     }
   `;

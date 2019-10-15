@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { TeacherGuard, LoggedInGuard } from './core/guards';
 
 const routes: Routes = [
   {
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'formations',
     loadChildren: () => import('./features/catalogs/catalogs.module').then(mod => mod.CatalogsModule)
+  },
+  {
+    path: 'panel/teachers',
+    loadChildren: () => import('./features/teachers/teachers.module').then(mod => mod.TeachersModule),
   }
 ];
 

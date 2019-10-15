@@ -5,13 +5,13 @@ import gql from 'graphql-tag';
 @Injectable({
   providedIn: 'root',
 })
-export class RefreshTokenGQL extends Mutation {
+export class UploadVideoGQL extends Mutation {
   document = gql`
-    mutation refreshToken($token: String!) {
-      refreshToken(refreshToken: $token) {
-        jwt
-        refreshToken
-        isTeacher
+    scalar Upload
+
+    mutation UploadVideoMutation($file: Upload!) {
+      uploadVideo(file: $file) {
+        id
       }
     }
   `;

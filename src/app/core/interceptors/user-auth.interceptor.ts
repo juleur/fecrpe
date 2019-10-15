@@ -3,12 +3,16 @@ import { HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@a
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services';
 import * as Cookies from 'js-cookie';
+import { TeacherService } from '../services/teacher.service';
 
 @Injectable()
 export class UserAuthInterceptor implements HttpInterceptor {
   private refreshingToken = false;
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    private teacher: TeacherService
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     if (this.auth.isLoggedIn() && !!Cookies.get('access_token') && !this.auth.tokenExpiration) {
@@ -24,6 +28,7 @@ export class UserAuthInterceptor implements HttpInterceptor {
                   Cookies.set('refresh_token', tokens.refreshToken, { secure: true, expires: 5 });
                   req = this.cloneHeader(req);
                   this.refreshingToken = false;
+                  this.teacher.isTeacherSubject.next(true);
                   return next.handle(req);
               }),
             );
@@ -32,6 +37,7 @@ export class UserAuthInterceptor implements HttpInterceptor {
             return next.handle(req);
           }
         }
+        this.teacher.isTeacherSubject.next(false);
       }));
     }
   }

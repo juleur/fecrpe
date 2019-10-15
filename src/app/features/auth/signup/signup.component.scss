@@ -70,7 +70,7 @@
   }
 }
 
-input[type=email], input[type=text], input[type=password] {
+.email_input, .username_input, .password_input {
   padding: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;

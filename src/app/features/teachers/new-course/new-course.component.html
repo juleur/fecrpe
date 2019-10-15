@@ -1,0 +1,54 @@
+<div class="new-course__grid">
+  <h2>Créez nouveau cours</h2>
+  <form class="new-course__form" [formGroup]="rcForm" (ngSubmit)="onNewCourse()">
+    <mat-form-field class="title__new-course">
+      <input matInput placeholder="Titre" formControlName="title">
+    </mat-form-field>
+  
+    <mat-form-field class="description__new-course">
+      <textarea matInput placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="refresher-course__new-course">
+      <mat-label>Cours</mat-label>
+      <select matNativeControl formControlName="refresherCourse">
+        <option value="" selected></option>
+        <option *ngFor="let refresherCourse of refresherCourses" [value]="refresherCourse">
+          {{ refresherCourse.subject.name }}
+        </option>
+      </select>
+    </mat-form-field>
+
+    <div class="middle_content__new-course">
+      <mat-form-field class="part__new-course">
+        <input matInput placeholder="Partie n°" type="number" formControlName="part">
+      </mat-form-field>
+  
+      <mat-form-field class="type__new-course">
+        <mat-label>Type</mat-label>
+        <select matNativeControl formControlName="type">
+          <option value="" selected></option>
+          <option *ngFor="let type of typesCourse" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </mat-form-field>
+        
+      <mat-form-field class="recordedOn_new-course">
+        <input matInput [matDatepicker]="picker" placeholder="Enregister le" formControlName="recordedOn">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+      </mat-form-field>
+
+      <input class="file__new-course" type="file" accept="video/mp4,video/x-m4v,video/*" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
+    </div>
+  
+    <mat-form-field class="price_new-course">
+      <input matInput placeholder="Amount" type="number" class="price_new-course" formControlName="price">
+      <span matPrefix>€&nbsp;</span>
+      <span matSuffix>.00</span>
+    </mat-form-field>
+
+    <button class="button__new-course" [disabled]="!rcForm.valid">Postez ce cours</button>
+  </form>
+</div>

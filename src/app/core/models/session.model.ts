@@ -1,6 +1,6 @@
 export enum Type {
-  Lesson = 'Lesson',
-  Exercise = 'Exercise'
+  Lesson = 'Leçon',
+  Exercise = 'Exercice'
 }
 
 export interface Session {

@@ -8,6 +8,7 @@ import { LoginGQL } from 'src/app/core/graphql/queries/login-gql';
 import { RefreshTokenGQL } from '../graphql/mutations/refresh-token-gql';
 import { Token } from '../models';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { TeacherService } from './teacher.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class AuthService {
     private apollo: Apollo,
     private loginGQL: LoginGQL,
     private refreshTokenGQL: RefreshTokenGQL,
+    private teacherService: TeacherService,
   ) {}
 
   isLoggedIn(): boolean {
@@ -47,6 +49,7 @@ export class AuthService {
         Cookies.set('access_token', res.data.token.jwt, { secure: true });
         Cookies.set('refresh_token', res.data.token.refreshToken, { secure: true, expires: 5 });
         this.isLoggedInSubject.next(true);
+        this.teacherService.isTeacherSubject.next(true);
       }),
       mapTo(true),
       catchError(err => of(false))
@@ -57,6 +60,7 @@ export class AuthService {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
     this.isLoggedInSubject.next(false);
+    this.teacherService.isTeacherSubject.next(false);
     this.apollo.getClient().resetStore();
   }
 }
