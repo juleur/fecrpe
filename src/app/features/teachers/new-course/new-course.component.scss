@@ -21,6 +21,20 @@ input.price_new-course {
   > h2 {
     text-align: center; 
   }
+  > h3 {
+    text-align: center;
+    color: #0C9919;
+  }
+  .message-upload__new-course {
+    font-size: 1.5em;
+    text-align: center;
+    color: #066AA2;
+  }
+  .message-error__new-course {
+    font-size: 1.5em;
+    text-align: center;
+    color: #E60F11;
+  }
 }
 
 .new-course__form {
@@ -52,15 +66,14 @@ input.price_new-course {
   .price_new-course {
     width: inherit;
   }
-  // .file__new-course {
-  //   margin: 0px 50px 0px 50px;
-  // }
-  .button__new-course {
-    height: 60px;
-    width: 300px;
-    background-color: lawngreen;
-    border-radius: 4px 4px 4px 4px;
-    font-size: 1.3em;
+  .btn__new-course {
     text-align: center;
+    .button__new-course {
+      height: 60px;
+      width: 300px;
+      background-color: lawngreen;
+      border-radius: 4px 4px 4px 4px;
+      font-size: 1.3em;
+    }
   }
 }

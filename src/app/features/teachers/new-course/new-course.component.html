@@ -1,6 +1,12 @@
 <div class="new-course__grid">
   <h2>Créez nouveau cours</h2>
-  <form class="new-course__form" [formGroup]="rcForm" (ngSubmit)="onNewCourse()">
+  
+  <span class="message-error__new-course" *ngIf="errorMessage">{{ errorMessage }}</span>
+  <span class="message-upload__new-course" *ngIf="uploadDoneMessage">{{ uploadDoneMessage }}</span>
+  <h3 *ngIf="progressUpload > 0 && progressUpload < 99">Envoie des informations ...</h3>
+  <mat-progress-bar mode="determinate" [value]="progressUpload" *ngIf="progressUpload > 0"></mat-progress-bar>
+  
+  <form class="new-course__form" [formGroup]="rcForm" (ngSubmit)="onNewCourseSubmit()" *ngIf="progressUpload === 0">
     <mat-form-field class="title__new-course">
       <input matInput placeholder="Titre" formControlName="title">
     </mat-form-field>
@@ -14,7 +20,7 @@
       <select matNativeControl formControlName="refresherCourse">
         <option value="" selected></option>
         <option *ngFor="let refresherCourse of refresherCourses" [value]="refresherCourse">
-          {{ refresherCourse.subject.name }}
+          Remise à niveau de {{ refresherCourse.subject.name }}
         </option>
       </select>
     </mat-form-field>
@@ -49,6 +55,8 @@
       <span matSuffix>.00</span>
     </mat-form-field>
 
-    <button class="button__new-course" [disabled]="!rcForm.valid">Postez ce cours</button>
+    <div class="btn__new-course">
+      <button class="button__new-course" [disabled]="!rcForm.valid">Postez ce cours</button>
+    </div>
   </form>
 </div>

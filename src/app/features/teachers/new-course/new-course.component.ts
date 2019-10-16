@@ -4,9 +4,10 @@ import { Apollo } from 'apollo-angular';
 
 import { UploadVideoGQL } from '../../../core/graphql/mutations/upload-video-gql';
 import { TeacherCoursesGQL } from '../../../core/graphql/queries/teacher-courses-gql';
-import { Subject, Type, RefresherCourse } from 'src/app/core';
+import { Subject, Type, RefresherCourse, FileUploaderService } from 'src/app/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'new-course',
@@ -16,17 +17,18 @@ import { map, tap } from 'rxjs/operators';
 export class NewCourseComponent implements OnInit {
   rcForm: FormGroup;
   typesCourse: string[] = Object.values(Type);
+  // RefresherCourse that aren't finished
   refresherCourses: RefresherCourse[] = [
     {id: 1, subject: {id: 1, name: 'Mathématique'}},
     {id: 2, subject: {id: 5, name: 'Français'}}
   ];
   progressUpload = 0;
+  uploadDoneMessage = '';
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
-    private apollo: Apollo,
-    private uploadVideoGQL: UploadVideoGQL,
-    private teacherCoursesGQL: TeacherCoursesGQL
+    private fileUploader: FileUploaderService
   ) { }
 
   ngOnInit() {
@@ -43,6 +45,26 @@ export class NewCourseComponent implements OnInit {
   }
 
   onNewCourseSubmit(): void {
+    this.fileUploader.addFile(this.rcForm).subscribe(
+      (event: HttpEvent<any>) => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            this.progressUpload = Math.round(event.loaded / event.total * 100);
+            break;
+          case HttpEventType.Response:
+            this.uploadDoneMessage = this.uploadDoneMessage + 'Chargement terminé. Votre cours sera immédiatement mis en ligne après le traitement effectué';
+            setTimeout(() => {
+              this.progressUpload = 0;
+              this.uploadDoneMessage = '';
+            }, 2000);
+            break;
+        }
+      },
+      (error: string) => {
+        this.errorMessage = this.errorMessage + error;
+        this.rcForm.reset();
+      }
+    );
   }
 
   onFileSelected(event: any): void {

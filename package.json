@@ -12,12 +12,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.0.0-next.7",
-    "@angular/cdk": "~8.2.2",
+    "@angular/cdk": "~8.2.3",
     "@angular/common": "~9.0.0-next.7",
     "@angular/compiler": "~9.0.0-next.7",
     "@angular/core": "~9.0.0-next.7",
     "@angular/forms": "~9.0.0-next.7",
-    "@angular/material": "^8.2.2",
+    "@angular/material": "^8.2.3",
     "@angular/platform-browser": "~9.0.0-next.7",
     "@angular/platform-browser-dynamic": "~9.0.0-next.7",
     "@angular/router": "~9.0.0-next.7",
@@ -38,8 +38,8 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.803.8",
-    "@angular/cli": "~8.3.8",
+    "@angular-devkit/build-angular": "~0.803.9",
+    "@angular/cli": "~8.3.9",
     "@angular/compiler-cli": "~9.0.0-next.7",
     "@angular/language-service": "~9.0.0-next.7",
     "@nguniversal/express-engine": "^8.1.1",

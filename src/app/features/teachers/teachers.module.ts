@@ -11,6 +11,8 @@ import { MatNativeDateModule, MatFormFieldModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -18,9 +20,9 @@ import { MatSelectModule } from '@angular/material/select';
   ],
   imports: [
     CommonModule, TeachersRoutingModule, ReactiveFormsModule,
-    MatDatepickerModule, MatNativeDateModule,
-    MatIconModule,
-    MatInputModule, MatFormFieldModule, MatSelectModule,
+    MatDatepickerModule, MatNativeDateModule, MatIconModule,
+    MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressBarModule,
+    MatProgressSpinnerModule
   ],
 })
 export class TeachersModule { }
