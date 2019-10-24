@@ -1,3 +1,36 @@
 :host {
   grid-row: 2;
 }
+.session-player__title {
+  text-align: center;
+}
+.session-player__grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 50px;
+  .session-player__video {
+    grid-row: 1;
+  }
+  .papers__pdf {
+    grid-row: 2;
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    .session-player__doc {
+      text-decoration: underline;
+    }
+    .pp_pdf {
+      width: 350px;
+      justify-self: center;
+      .btn-attach {
+        background-color: #00b300;
+        color: white;
+      }
+      .text-attach {
+        padding-right: 4px;
+        font-size: 1.3em;
+      }
+    }
+  }
+}

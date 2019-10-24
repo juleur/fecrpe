@@ -17,13 +17,9 @@
       </p>
       <p class="cdetails__ttsession">
         <span>Audiovisuel:</span> 246 heures
-      </p>
-      <ng-container *ngIf="auth.isLoggedIn(); else login">
-        <button class="buy">ACHETER</button>
-      </ng-container>
-      <ng-template #login>
-        <a class="connect" [routerLink]="['/auth/login']">SE CONNECTER</a>
-      </ng-template>      
+      </p>      
+      <div class="auth__new-details" #paypalRef [hidden]="!auth.isLoggedIn()"></div>
+      <a class="connect__new-details" [routerLink]="['/auth/login']" *ngIf="!auth.isLoggedIn()">SE CONNECTER</a>
     </div>
   </div>
 </div>

@@ -25,6 +25,7 @@
       </select>
     </mat-form-field>
 
+    <span>Video:</span>
     <div class="middle_content__new-course">
       <mat-form-field class="part__new-course">
         <input matInput placeholder="Partie n°" type="number" formControlName="part">
@@ -48,7 +49,26 @@
 
       <input class="file__new-course" type="file" accept="video/mp4,video/x-m4v,video/*" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
     </div>
-  
+    
+    <span>Document PDF:</span>
+    <div class="docs__new-courses" formArrayName="docs">
+      <ng-container *ngFor="let doc of rcForm.get('docs').controls;index as i" [formGroupName]="i">
+        <mat-form-field class="title-pdf__new-course">
+          <input matInput formControlName="title" placeholder="Nom de fichier">
+        </mat-form-field>
+        <input formControlName="file" class="doc-file__new-courses" type="file" accept="application/pdf,application/msword,application/vnd.ms-excel,image/*">
+        <button class="btn-remove-doc__new-course" type="button" mat-mini-fab (click)="removeDocs(i)">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </ng-container>
+    </div>
+    <div class="btn-add-doc__new-course">
+      <button type="button" mat-mini-fab (click)="addDocs()" [disabled]="onBtnAddDocs()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+
     <mat-form-field class="price_new-course">
       <input matInput placeholder="Amount" type="number" class="price_new-course" formControlName="price">
       <span matPrefix>€&nbsp;</span>

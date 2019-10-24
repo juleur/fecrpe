@@ -63,6 +63,30 @@ input.price_new-course {
       padding-top: 20px;
     }
   }
+  .docs__new-courses {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 20px;
+    .title-pdf__new-course {
+      width: 350px;
+      grid-column: 1;
+    }
+    .doc-file__new-courses {
+      grid-column: 2;
+      width: 250px;
+      padding-top: 20px;
+    }
+    .btn-remove-doc__new-course {
+      grid-column: 3;
+      background-color: #ff6171;
+    }
+  }
+  .btn-add-doc__new-course {
+    text-align: center;
+    > button {
+      background-color: greenyellow;
+    }
+  }
   .price_new-course {
     width: inherit;
   }

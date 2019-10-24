@@ -1,9 +1,21 @@
-<video 
-  #videoPlayer 
-  id="video" 
-  width="1080"
-  height="720"
-  poster="https://upload.wikimedia.org/wikipedia/commons/c/c4/PM5544_with_non-PAL_signals.png"
-  controls
->
-</video>
+<h2 class="session-player__title">TITRE TITRE TITRE</h2>
+<div class="session-player__grid">
+  <div class="session-player__video" plyr [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources" [plyrPoster]="poster"></div>
+  <div class="papers__pdf">
+    <ng-container *ngIf="expression; else elseTemplate">
+      <h2 class="session-player__doc">Document</h2>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <h2 class="session-player__doc">Documents</h2>      
+    </ng-template>
+    
+    <ng-container *ngFor="let item of items">
+      <div class="pp_pdf">
+        <span class="text-attach">1. Exercice suite numérique</span>
+        <button mat-raised-button class="btn-attach">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
+    </ng-container>    
+  </div>
+</div>

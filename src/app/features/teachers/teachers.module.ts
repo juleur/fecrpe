@@ -7,12 +7,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { NewCourseComponent } from './new-course/new-course.component';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MatFormFieldModule } from '@angular/material';
+import { MatNativeDateModule } from '@angular/material/';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule, TeachersRoutingModule, ReactiveFormsModule,
     MatDatepickerModule, MatNativeDateModule, MatIconModule,
     MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule, MatIconModule, MatButtonModule
   ],
 })
 export class TeachersModule { }

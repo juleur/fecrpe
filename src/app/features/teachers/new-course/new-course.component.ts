@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 
 import { UploadVideoGQL } from '../../../core/graphql/mutations/upload-video-gql';
@@ -40,8 +40,34 @@ export class NewCourseComponent implements OnInit {
       type: ['', [Validators.required]],
       recordedOn: ['', [Validators.required]],
       file: [null, [Validators.required]],
+      docs: this.fb.array([]),
       price: ['', [Validators.required]],
     });
+  }
+
+  addDocs(): void {
+    const docs = this.rcForm.controls.docs as FormArray;
+    docs.push(this.fb.group({
+      title: ['', Validators.required],
+      file: [null, Validators.required]
+    }));
+  }
+
+  removeDocs(index: number): void {
+    const docs = this.rcForm.controls.docs as FormArray;
+    docs.removeAt(index);
+  }
+
+  onBtnAddDocs(): boolean {
+    const docs = this.rcForm.controls.docs as FormArray;
+    if (docs.controls.length === 0) {
+      return false;
+    } else {
+      if (docs.controls[docs.length - 1].get('file').value) {
+        return false;
+      }
+      return true;
+    }
   }
 
   onNewCourseSubmit(): void {
