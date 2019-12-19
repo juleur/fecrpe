@@ -1,5 +1,6 @@
+import {Observable} from '@apollo/client/core';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'apollo-link';
+
 import { of } from 'zen-observable';
 
 @Component({
