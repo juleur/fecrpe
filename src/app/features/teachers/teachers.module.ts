@@ -7,7 +7,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { NewCourseComponent } from './new-course/new-course.component';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   imports: [
     CommonModule, TeachersRoutingModule, ReactiveFormsModule,
-    MatDatepickerModule, MatNativeDateModule, MatIconModule,
+    MatDatepickerModule, MatIconModule,
     MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressBarModule,
     MatProgressSpinnerModule, MatIconModule, MatButtonModule
   ],

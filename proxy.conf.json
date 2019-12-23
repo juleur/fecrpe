@@ -1,0 +1,6 @@
+{
+  "/query": {
+    "target": "http://localhost:6677",
+    "logLevel": "debug"
+  }
+}

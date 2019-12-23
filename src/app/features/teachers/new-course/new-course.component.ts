@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 
-import { UploadVideoGQL } from '../../../core/graphql/mutations/upload-video-gql';
 import { TeacherCoursesGQL } from '../../../core/graphql/queries/teacher-courses-gql';
-import { Subject, Type, RefresherCourse, FileUploaderService } from 'src/app/core';
+import { Type, RefresherCourse } from 'src/app/core/models';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
@@ -28,7 +27,6 @@ export class NewCourseComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private fileUploader: FileUploaderService
   ) { }
 
   ngOnInit() {
@@ -70,28 +68,7 @@ export class NewCourseComponent implements OnInit {
     }
   }
 
-  onNewCourseSubmit(): void {
-    this.fileUploader.addFile(this.rcForm).subscribe(
-      (event: HttpEvent<any>) => {
-        switch (event.type) {
-          case HttpEventType.UploadProgress:
-            this.progressUpload = Math.round(event.loaded / event.total * 100);
-            break;
-          case HttpEventType.Response:
-            this.uploadDoneMessage = this.uploadDoneMessage + 'Chargement terminé. Votre cours sera immédiatement mis en ligne après le traitement effectué';
-            setTimeout(() => {
-              this.progressUpload = 0;
-              this.uploadDoneMessage = '';
-            }, 2000);
-            break;
-        }
-      },
-      (error: string) => {
-        this.errorMessage = this.errorMessage + error;
-        this.rcForm.reset();
-      }
-    );
-  }
+  onNewCourseSubmit(): void {}
 
   onFileSelected(event: any): void {
     const file = (event.target as HTMLInputElement).files[0];

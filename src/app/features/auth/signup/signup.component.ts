@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { SignupGQL } from 'src/app/core/graphql/mutations/signup-gql';
+import { Apollo } from 'apollo-angular';
+import { SIGNUP_GQL, SignupResponse } from './signup-gql';
 
 @Component({
   selector: 'signup',
@@ -10,12 +9,11 @@ import { SignupGQL } from 'src/app/core/graphql/mutations/signup-gql';
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
-  registerForm: FormGroup;
-
   constructor(
     private fb: FormBuilder,
-    private signupGQL: SignupGQL
-  ) { }
+    private apollo: Apollo
+  ) {}
+  registerForm: FormGroup;
 
   ngOnInit() {
     this.registerForm = this.fb.group({
@@ -27,12 +25,24 @@ export class SignupComponent implements OnInit {
   }
 
   onRegister(): void {
-    this.signupGQL.mutate({
-      email: this.registerForm.value.email,
-      username: this.registerForm.value.username,
-      password: this.registerForm.value.password
-    }).pipe(
-      catchError(err => of(err))
+    this.apollo.mutate<SignupResponse>({
+      mutation: SIGNUP_GQL,
+      variables: {
+        input: {
+          email: this.registerForm.value.email,
+          username: this.registerForm.value.username,
+          password: this.registerForm.value.password
+        }
+      }
+    }).subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        if (err.graphQLErrors) {
+          err.graphQLErrors.forEach(e => console.log(e.message));
+        }
+      }
     );
   }
 }

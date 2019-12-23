@@ -1,24 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { MyProfilGQL } from 'src/app/core/graphql/queries/my-profil-gql';
-import { UpdateProfilGQL } from 'src/app/core/graphql/mutations/update-profil-gql';
-import { User } from 'src/app/core';
+import { Subscription } from 'rxjs';
+import { Apollo } from 'apollo-angular';
+import { MYPROFIL_GQL, UPDATEPROFIL_GQL, MyProfilResponse, UpdateUserResponse } from './profil-gql';
+import { AuthService } from './../../../core/services/auth.service';
 
 @Component({
   selector: 'my-profil',
   templateUrl: './profil.component.html',
   styleUrls: ['./profil.component.scss']
 })
-export class ProfilComponent implements OnInit {
+export class ProfilComponent implements OnInit, OnDestroy {
+  constructor(private fb: FormBuilder, private apollo: Apollo, private auth: AuthService) { }
+  private querySub: Subscription;
   userForm: FormGroup;
-
-  constructor(
-    private fb: FormBuilder,
-    private myProfilGQL: MyProfilGQL,
-    private updateProfilGQL: UpdateProfilGQL
-  ) { }
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -26,19 +21,34 @@ export class ProfilComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
-    this.myProfilGQL.watch().valueChanges.pipe(
-      tap(res => this.userForm.patchValue(res.data.user)),
-      catchError(err => of(err))
+    this.querySub = this.apollo.watchQuery<MyProfilResponse>({
+      query: MYPROFIL_GQL,
+      variables: {
+        userId: this.auth.getUserIDToken()
+      }
+    }).valueChanges.subscribe(
+      res => this.userForm.patchValue(res.data.myProfile),
+    //   err => console.log(err),
     );
   }
 
   onUpdateUser(): void {
-    // add jwt service to get token and decode it
-    this.updateProfilGQL.mutate({
-      userId: 14312545343
-    }).pipe(
-      tap(res => this.userForm.patchValue(res.data.user)),
-      catchError(err => of(err))
+    this.apollo.mutate<UpdateUserResponse>({
+      mutation: UPDATEPROFIL_GQL,
+      variables: {
+        input: {
+          username: this.userForm.value.username,
+          email: this.userForm.value.email,
+          password: this.userForm.value.password
+        }
+      }
+    }).subscribe(
+      // res => console.log(res.data.updateUser),
+      // err => console.log(err)
     );
+  }
+
+  ngOnDestroy() {
+    this.querySub.unsubscribe();
   }
 }
