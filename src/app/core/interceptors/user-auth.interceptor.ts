@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services';
 import * as Cookies from 'js-cookie';
 import { TeacherService } from '../services/teacher.service';
 
-const EXCLUDE_PATH: string[] = ['/auth/login', '/auth/signup'];
+const EXCLUDE_PATH: string[] = [
+  '/auth/login',
+  '/auth/signup'
+];
 
 @Injectable()
 export class UserAuthInterceptor implements HttpInterceptor {
@@ -30,9 +34,7 @@ export class UserAuthInterceptor implements HttpInterceptor {
         .set('Authorization', `Bearer ${JWToken}`)
         .set('Refresh-Token', RefreshToken)
     });
-    return next.handle(reqClone).pipe(
-      // tap(err => console.log(err))
-    );
+    return next.handle(reqClone).pipe();
     // this.auth.isLoggedIn$.subscribe(v => console.log(v));
     // if (this.auth.isLoggedIn() && !!Cookies.get('access_token') && !this.auth.tokenExpiration) {
     //   req = this.cloneHeader(req);
@@ -58,7 +60,6 @@ export class UserAuthInterceptor implements HttpInterceptor {
     //     }
     //     this.teacher.isTeacherSubject.next(false);
     //   }));
-    return next.handle(req);
   }
 }
 

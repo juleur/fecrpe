@@ -11,14 +11,18 @@ import { AuthService } from './../../../core/services/auth.service';
   styleUrls: ['./profil.component.scss']
 })
 export class ProfilComponent implements OnInit, OnDestroy {
-  constructor(private fb: FormBuilder, private apollo: Apollo, private auth: AuthService) { }
+  constructor(
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private auth: AuthService
+  ) {}
   private querySub: Subscription;
   userForm: FormGroup;
 
   ngOnInit() {
     this.userForm = this.fb.group({
-      email: ['', Validators.required],
-      username: ['', Validators.required],
+      email: ['', Validators.email],
+      username: ['', Validators.maxLength(3)],
       password: ['', Validators.required],
     });
     this.querySub = this.apollo.watchQuery<MyProfilResponse>({
@@ -26,10 +30,15 @@ export class ProfilComponent implements OnInit, OnDestroy {
       variables: {
         userId: this.auth.getUserIDToken()
       }
-    }).valueChanges.subscribe(
-      res => this.userForm.patchValue(res.data.myProfile),
-    //   err => console.log(err),
-    );
+    }).valueChanges.subscribe(res => {
+      if (res.errors === undefined) {
+        this.userForm.patchValue(res.data.myProfile);
+      } else {
+        for (const err of res.errors) {
+          console.log(err.message);
+        }
+      }
+    });
   }
 
   onUpdateUser(): void {
@@ -42,10 +51,15 @@ export class ProfilComponent implements OnInit, OnDestroy {
           password: this.userForm.value.password
         }
       }
-    }).subscribe(
-      // res => console.log(res.data.updateUser),
-      // err => console.log(err)
-    );
+    }).subscribe(res => {
+      if (res.errors === undefined) {
+        console.log('updated');
+      } else {
+        for (const err of res.errors) {
+          console.log(err.message);
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
