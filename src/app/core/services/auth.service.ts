@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import * as Cookies from 'js-cookie';
 import { Apollo } from 'apollo-angular';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -8,19 +8,23 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private apollo: Apollo) { }
-
+  constructor(private apollo: Apollo) {}
   private jwtHelper = new JwtHelperService();
   private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.tokenExpiration() ? false : true);
 
-  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  isLoggedIn(): Observable<boolean> {
+    return this.isLoggedInSubject.asObservable();
+  }
 
-  isLoggedIn(): boolean {
-    return this.isLoggedInSubject.getValue();
+  changeLoginStatus(status: boolean): void {
+    if (status) {
+      this.isLoggedInSubject.next(true);
+    }
+    this.isLoggedInSubject.next(false);
   }
 
   tokenExpiration(): boolean {
-    return this.jwtHelper.isTokenExpired();
+    return this.jwtHelper.isTokenExpired(Cookies.get('access_token'));
   }
 
   getUserIDToken(): number {
@@ -28,18 +32,10 @@ export class AuthService {
     return decodedToken['userId'] as number;
   }
 
-  changeLoginStatus(status: boolean): void {
-    if (status) {
-      this.isLoggedInSubject.next(true);
-    } else {
-      this.isLoggedInSubject.next(false);
-    }
-  }
-
-  onLogout(): void {
+  deauthentication(): void {
+    this.isLoggedInSubject.next(false);
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
-    this.isLoggedInSubject.next(false);
     this.apollo.client.resetStore();
   }
 }

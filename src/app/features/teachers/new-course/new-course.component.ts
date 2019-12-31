@@ -90,3 +90,11 @@ export class NewCourseComponent implements OnInit {
     return false;
   }
 }
+
+// apollo.query({
+//   query: MY_QUERY,
+//   context: {
+//     useMultipart: true
+//   },
+// });
+

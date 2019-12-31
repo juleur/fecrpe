@@ -8,7 +8,5 @@ export interface User {
   isTeacher?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  jwt?: string;
-  refreshToken?: string;
   refresherCourses: RefresherCourse[];
 }

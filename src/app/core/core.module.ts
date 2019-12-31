@@ -8,7 +8,6 @@ import { TopComponent } from './layouts/top/top.component';
 import { HomepageComponent } from './layouts/homepage/homepage.component';
 import { BottomComponent } from './layouts/bottom/bottom.component';
 
-
 const routes: Routes = [
   {path: '', component: HomepageComponent},
 ];
@@ -22,7 +21,7 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule, TopComponent, HomepageComponent, BottomComponent
-  ]
+  ],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

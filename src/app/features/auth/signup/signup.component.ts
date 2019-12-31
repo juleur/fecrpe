@@ -33,7 +33,8 @@ export class SignupComponent implements OnInit {
           username: this.registerForm.value.username,
           password: this.registerForm.value.password
         }
-      }
+      },
+      fetchPolicy: 'no-cache'
     }).subscribe(
       res => {
         console.log(res);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from '../services';
@@ -12,29 +12,17 @@ const EXCLUDE_PATH: string[] = [
 ];
 
 @Injectable()
-export class UserAuthInterceptor implements HttpInterceptor {
-  private refreshingToken = false;
-
-  constructor(
-    private auth: AuthService,
-    private teacher: TeacherService
-  ) {}
+export class AuthAfterwareInterceptor implements HttpInterceptor {
+  constructor(private auth: AuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
+    console.log('AUTHAFTERWARE');
     // prevent interceptor from triggering
-    for (const path of EXCLUDE_PATH) {
-      if (req.url.includes(path)) {
-        return next.handle(req);
-      }
-    }
-    const JWToken = Cookies.get('access_token') || 'unknown';
-    const RefreshToken = Cookies.get('refresh_token') || 'unknown';
-    const reqClone = req.clone({
-      headers: req.headers
-        .set('Authorization', `Bearer ${Cookies.get('refresh_token') || 'unknown'}`)
-        .set('Refresh-Token', Cookies.get('refresh_token') || 'unknown')
-    });
-    return next.handle(reqClone);
+    return next.handle(req).pipe(
+      tap(res => {
+          console.log(res);
+      }),
+    );
     // this.auth.isLoggedIn$.subscribe(v => console.log(v));
     // if (this.auth.isLoggedIn() && !!Cookies.get('access_token') && !this.auth.tokenExpiration) {
     //   req = this.cloneHeader(req);

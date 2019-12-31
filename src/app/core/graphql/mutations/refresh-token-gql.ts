@@ -1,19 +1,15 @@
-import {gql} from '@apollo/client/core';
-import { Injectable } from '@angular/core';
-import { Mutation } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { Token } from '../../models';
 
-
-@Injectable({
-  providedIn: 'root',
-})
-export class RefreshTokenGQL extends Mutation {
-  document = gql`
-    mutation refreshToken($token: String!) {
-      refreshToken(refreshToken: $token) {
+export const REFRESHTOKEN_GQL = gql`
+    mutation RefreshToken {
+      refreshToken {
         jwt
         refreshToken
-        isTeacher
       }
     }
-  `;
+`;
+
+export interface RefreshTokenResponse {
+  refreshToken: Token;
 }
