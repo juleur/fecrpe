@@ -7,8 +7,6 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import * as Cookies from 'js-cookie';
 import { REFRESHTOKEN_GQL } from './core/graphql/mutations/refresh-token-gql';
-import { ToastrService } from 'ngx-toastr';
-import { ApolloClient } from 'apollo-client';
 
 const uri = 'http://localhost:6677/query'; // <-- add the URL of the GraphQL server here
 
@@ -24,47 +22,47 @@ const headersMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
-
 const errorAfterware = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
-      switch (err.extensions.statusText) {
-        case 'Token Expired':
-          const refTokenOp = {
-            query: REFRESHTOKEN_GQL,
-            context: operation.getContext()
-          };
-          execute(authLink, refTokenOp).subscribe(res => {
-            if (res.data) {
-              Cookies.set('access_token', res.data.refreshToken.jwt, { secure: false });
-              Cookies.set('refresh_token', res.data.refreshToken.refreshToken, { secure: false, expires: 14 });
-            }
-          });
-          return forward(operation);
-        case 'Unauthorized':
-          Cookies.remove('access_token');
-          Cookies.remove('refresh_token');
-          client.resetStore();
+      if (err.extensions !== undefined) {
+        switch (err.extensions.statusText) {
+          case 'Token Expired':
+            const refTokenOp = {
+              query: REFRESHTOKEN_GQL,
+              context: operation.getContext()
+            };
+            execute(authLink, refTokenOp).subscribe(res => {
+              if (res.data) {
+                Cookies.set('access_token', res.data.refreshToken.jwt, { secure: false });
+                Cookies.set('refresh_token', res.data.refreshToken.refreshToken, { secure: false, expires: 14 });
+              }
+            });
+            return forward(operation);
+          case 'Unauthorized':
+            Cookies.remove('access_token');
+            Cookies.remove('refresh_token');
+            break;
         }
+      }
     }
   }
 });
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: ApolloLink.from([headersMiddleware, errorAfterware, authLink]),
-  defaultOptions: {
-    watchQuery: {
-      errorPolicy: 'all',
-    },
-    mutate: {
-      errorPolicy: 'all'
-    }
-  }
-});
 
 export function createApollo() {
-  return { client };
+  return {
+    cache: new InMemoryCache(),
+    link: ApolloLink.from([headersMiddleware, errorAfterware, authLink]),
+    defaultOptions: {
+      watchQuery: {
+        errorPolicy: 'all',
+      },
+      mutate: {
+        errorPolicy: 'all'
+      }
+    }
+   };
 }
 
 @NgModule({

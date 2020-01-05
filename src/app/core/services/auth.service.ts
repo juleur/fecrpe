@@ -1,41 +1,40 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import * as Cookies from 'js-cookie';
 import { Apollo } from 'apollo-angular';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private apollo: Apollo) {}
   private jwtHelper = new JwtHelperService();
-  private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.tokenExpiration() ? false : true);
+  private loggedInSubject = new BehaviorSubject<boolean>(this.loggedInSubjectStatus());
+  isLoggedIn$ = this.loggedInSubject.asObservable();
 
-  isLoggedIn(): Observable<boolean> {
-    return this.isLoggedInSubject.asObservable();
-  }
+  constructor() {}
 
-  changeLoginStatus(status: boolean): void {
-    if (status) {
-      this.isLoggedInSubject.next(true);
+  private loggedInSubjectStatus(): boolean {
+    if (
+      this.jwtHelper.decodeToken(Cookies.get('access_token')) != null &&
+      !this.jwtHelper.isTokenExpired(Cookies.get('access_token'))
+    ) {
+      return true;
     }
-    this.isLoggedInSubject.next(false);
+    return false;
   }
-
-  tokenExpiration(): boolean {
-    return this.jwtHelper.isTokenExpired(Cookies.get('access_token'));
+  changeAuthStatus(status: boolean): void {
+    this.loggedInSubject.next(status);
   }
 
   getUserIDToken(): number {
     const decodedToken = this.jwtHelper.decodeToken(Cookies.get('access_token'));
-    return decodedToken['userId'] as number;
+    return decodedToken['userId'];
   }
 
-  deauthentication(): void {
-    this.isLoggedInSubject.next(false);
-    Cookies.remove('access_token');
-    Cookies.remove('refresh_token');
-    this.apollo.client.resetStore();
+  getUsernameToken(): string {
+    const decodedToken = this.jwtHelper.decodeToken(Cookies.get('access_token'));
+    return decodedToken['username'];
   }
 }

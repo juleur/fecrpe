@@ -4,51 +4,49 @@
       <img src="./../../../../assets/icons8-edit-image-64.png">
     </a>
   </div>
-  
   <div class="right_menu">
-    <span *ngIf="(isLoggedIn$ | async)">
+    <span *ngIf="isUserLoggedIn$ | async">
       <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
     </span>
-    <span *ngIf="(isLoggedIn$ | async)">
+    <span *ngIf="isUserLoggedIn$ | async">
       <a [routerLink]="['/u/mon-profil']">Profils</a>
     </span>
   
-    <span *ngIf="!(isLoggedIn$ | async)">
+    <span *ngIf="!(isUserLoggedIn$ | async)">
       <a [routerLink]="['/auth/login']">Se Connecter</a>
     </span>
-    <span *ngIf="!(isLoggedIn$ | async)">
+    <span *ngIf="!(isUserLoggedIn$ | async)">
       <a [routerLink]="['/auth/signup']">S'enregistrer</a>
     </span>
   
-    <span *ngIf="(isLoggedIn$ | async)">
-      <a [routerLink]="['/']" (click)="auth.deauthentication()">Se Deconnecter</a>
+    <span *ngIf="isUserLoggedIn$ | async">
+      <a [routerLink]="['/']" (click)="onLogout()">Se Deconnecter</a>
     </span>
   </div>
-  
+
   <div class="mobile_query">
     <input type="checkbox" id="slide" name="" value="" />
     <div class="container">
       <label for="slide" class="toggle">☰</label>
       <nav class="sidebar">
         <ul>
-          <li *ngIf="(isLoggedIn$ | async)">
+          <li *ngIf="isUserLoggedIn$ | async">
             <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
           </li>
-          <li *ngIf="(isLoggedIn$ | async)">
+          <li *ngIf="isUserLoggedIn$ | async">
             <a [routerLink]="['/u/mon-profil']">Profils</a>
           </li>
-          <li *ngIf="!(isLoggedIn$ | async)">
+          <li *ngIf="!(isUserLoggedIn$ | async)">
             <a [routerLink]="['/auth/login']">Se Connecter</a>
           </li>
-          <li *ngIf="!(isLoggedIn$ | async)">
+          <li *ngIf="!(isUserLoggedIn$ | async)">
             <a [routerLink]="['/auth/signup']">S'enregistrer</a>
           </li>
-          <li *ngIf="(isLoggedIn$ | async)">
-            <a [routerLink]="['/']" (click)="auth.deauthentication()">Se Deconnecter</a>
+          <li *ngIf="isUserLoggedIn$ | async">
+            <a [routerLink]="['/']" (click)="onLogout()">Se Deconnecter</a>
           </li>
         </ul>
       </nav>
     </div>
   </div>
 </div>
-

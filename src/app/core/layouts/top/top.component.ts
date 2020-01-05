@@ -1,20 +1,25 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Component } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Observable } from 'rxjs';
 import { AuthService } from '../../services';
+import * as Cookies from 'js-cookie';
 
 @Component({
   selector: 'top',
   templateUrl: './top.component.html',
   styleUrls: ['./top.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopComponent implements OnInit {
-  isLoggedIn$: Observable<boolean>;
+export class TopComponent {
+  isUserLoggedIn$: Observable<boolean>;
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private apollo: Apollo) {
+    this.isUserLoggedIn$ = this.auth.isLoggedIn$;
+  }
 
-  ngOnInit() {
-    this.isLoggedIn$ = this.auth.isLoggedIn();
+  onLogout(): void {
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
+    this.apollo.client.clearStore();
+    this.auth.changeAuthStatus(false);
   }
 }
