@@ -1,7 +1,8 @@
-<h2 class="session-player__title">TITRE TITRE TITRE</h2>
+<h2 class="session-player__title">[{{ session?.type | titlecase }}] {{ session?.title | titlecase }}<span *ngIf="session?.part"> - Part {{ session?.part }}</span></h2>
 <div class="session-player__grid">
-  <div class="session-player__video" plyr [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources" [plyrPoster]="poster"></div>
-  <div class="papers__pdf">
+  <div class="session-player__video" *ngIf="sources?.length > 0" plyr [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources" [plyrPoster]="poster"></div>
+  <div class="session-player__description"></div>
+  <div class="session-player__classpapers">
     <!-- <ng-container *ngIf="expression; else elseTemplate">
       <h2 class="session-player__doc">Document</h2>
     </ng-container>

@@ -1,5 +1,6 @@
 import { Subject } from './subject.model';
 import { Session } from './session.model';
+import { User } from './user.model';
 
 export interface RefresherCourse {
     id?: number;
@@ -10,4 +11,6 @@ export interface RefresherCourse {
     sessions?: Session[];
     createdAt?: string;
     updatedAt?: string;
+    isPurchased?: boolean;
+    author?: User;
 }

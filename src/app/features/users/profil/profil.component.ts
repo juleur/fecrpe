@@ -45,7 +45,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
           userId: this.auth.getUserIDToken()
         },
       }).valueChanges.subscribe(res => {
-        if (res.errors === undefined && res.data === null) {
+        if (res.hasOwnProperty('errors')) {
           for (const err of res.errors) {
             switch (err.extensions.statusText) {
               case 'Unauthorized':

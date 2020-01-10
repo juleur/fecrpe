@@ -1,8 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, QueryList } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { RefresherCourse, Type as TypeCourse, AuthService } from 'src/app/core';
-import { CourseDetailsGQL } from './../../../core/graphql/queries/course-details-gql';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { map, tap } from 'rxjs/operators';
+import { RefresherCourse } from './../../../core/models/refresher-course.model';
+import { AuthService } from './../../../core/services/auth.service';
+import { COURSEDETAILS_GQL, CourseDetailsResponse } from './course-details-gql';
+import { Apollo } from 'apollo-angular';
+import { ToastrService } from 'ngx-toastr';
 
 declare var paypal;
 
@@ -11,60 +15,76 @@ declare var paypal;
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.scss'],
 })
-export class CourseDetailsComponent implements OnInit, AfterViewInit {
-  @ViewChild('paypalRef', {static: false}) paypalElemRef: ElementRef<HTMLElement>;
-  errMessage = '';
+export class CourseDetailsComponent implements OnInit {
+  @ViewChild('paypalButton') set paypalButton(element: ElementRef) {
+    if (element) {
+      paypal
+        .Buttons({
+          style: { color: 'blue', shape: 'rect', label: 'pay', size: 'medium', layout: 'horizontal', tagline: 'true' },
+          createOrder: (_, actions: any) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  description: 'Simple test',
+                  amount: {
+                    currency_code: 'EUR',
+                    value: 12.03,
+                  },
+                },
+              ]
+            });
+          },
+          onApprove: async (data: any, actions: any) => {
+            const order = await actions.order.capture();
+            console.log(order);
+          },
+          onError: (err: Error) => {
+            console.log(err);
+          }
+        })
+        .render(element.nativeElement);
+    }
+  }
 
+  private refCourseID: number;
+  isUserLoggedIn$: Observable<boolean>;
   refresherCourse$: Observable<RefresherCourse>;
 
   constructor(
-    private courseDetailsGQL: CourseDetailsGQL,
-    private auth: AuthService
-  ) { }
-
-  ngOnInit() {
-    // this.refresherCourse$ = this.courseDetailsGQL.watch().valueChanges.pipe(
-    //   map(res => res.data.refresherCourse)
-    // );
-    this.refresherCourse$ = of({
-      id: 12, year: '2034', isFinished: false, price: 24,
-      subject: {
-        id: 12,
-        name: 'Mathematique'
-      },
-      sessions: [
-        {id: 12, type: TypeCourse.Lesson, title: 'Suite numérique'},
-        {id: 45, type: TypeCourse.Lesson, title: 'Theoreme de Pythagore'},
-        {id: 34, type: TypeCourse.Exercise, title: 'Lislo'}
-      ]
-    });
+    private auth: AuthService, private apollo: Apollo,
+    private toast: ToastrService, private route: ActivatedRoute,
+  ) {
+    this.isUserLoggedIn$ = this.auth.isLoggedIn$;
+    this.refCourseID = this.route.snapshot.params.id;
   }
 
-  ngAfterViewInit() {
-    paypal
-      .Buttons({
-        locale: 'fr_FR',
-        style: {color: 'blue', shape: 'rect', label: 'pay', size: 'medium', layout: 'horizontal', tagline: 'true'},
-        // createOrder: (_, actions: any) => {
-        //   return actions.order.create({
-        //     purchase_units: [
-        //       {
-        //         description: 'Simple test',
-        //         amounts: {
-        //           currency_code: 'EUR',
-        //           value: 12.03,
-        //         }
-        //       }
-        //     ]
-        //   });
-        // },
-        // onApprove: async (data: any, actions: any) => {
-        //   const order = await actions.order.capture();
-        // },
-        // onError: (err: Error) => {
-        //   console.log(err);
-        // }
-      })
-      .render(this.paypalElemRef.nativeElement);
-    }
+  ngOnInit() {
+    this.refresherCourse$ = this.apollo.watchQuery<CourseDetailsResponse>({
+      query: COURSEDETAILS_GQL,
+      variables: {
+        refresherCourseId: this.refCourseID
+      }
+    }).valueChanges.pipe(
+      tap(res => {
+        if (res.hasOwnProperty('errors')) {
+          for (const err of res.errors) {
+            switch (err.extensions.statusText) {
+              case 'Not Found':
+                this.toast.warning(`${err.message} !`, 'Remise à niveau', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 2000
+                });
+                break;
+              case 'Internal Server Error':
+                this.toast.error(`${err.message} !`, 'Remise à niveau', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 2000
+                });
+            }
+          }
+        }
+      }),
+      map(res => res.data.getRefresherCourse),
+    );
+  }
 }

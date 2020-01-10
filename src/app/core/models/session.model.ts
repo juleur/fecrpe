@@ -1,6 +1,8 @@
+import { Video } from './video.model';
+
 export enum Type {
-  Lesson = 'Leçon',
-  Exercise = 'Exercice'
+  LESSON = 'Leçon',
+  EXERCISE = 'Exercice'
 }
 
 export interface Session {
@@ -12,5 +14,6 @@ export interface Session {
   recordedOn?: string;
   createdAt?: string;
   updatedAt?: string;
+  video: Video;
   refresherCourseId?: number;
 }

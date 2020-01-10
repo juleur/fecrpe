@@ -7,13 +7,16 @@
 .session-player__grid {
   margin-top: 20px;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   row-gap: 50px;
   .session-player__video {
     grid-row: 1;
   }
-  .papers__pdf {
+  .session-player__description {
     grid-row: 2;
+  }
+  .session-player__classpapers {
+    grid-row: 3;
     
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
