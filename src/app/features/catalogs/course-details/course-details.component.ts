@@ -18,6 +18,7 @@ declare var paypal;
 export class CourseDetailsComponent implements OnInit {
   @ViewChild('paypalButton') set paypalButton(element: ElementRef) {
     if (element) {
+      this.priceRefCourse = 10;
       paypal
         .Buttons({
           style: { color: 'blue', shape: 'rect', label: 'pay', size: 'medium', layout: 'horizontal', tagline: 'true' },
@@ -28,7 +29,7 @@ export class CourseDetailsComponent implements OnInit {
                   description: 'Simple test',
                   amount: {
                     currency_code: 'EUR',
-                    value: 12.03,
+                    value: this.priceRefCourse,
                   },
                 },
               ]
@@ -36,10 +37,12 @@ export class CourseDetailsComponent implements OnInit {
           },
           onApprove: async (data: any, actions: any) => {
             const order = await actions.order.capture();
-            console.log(order);
           },
           onError: (err: Error) => {
-            console.log(err);
+            this.toast.error(`${err.message}`, 'Paiement Paypal', {
+              positionClass: 'toast-top-full-width',
+              timeOut: 3000
+            });
           }
         })
         .render(element.nativeElement);
@@ -49,6 +52,7 @@ export class CourseDetailsComponent implements OnInit {
   private refCourseID: number;
   isUserLoggedIn$: Observable<boolean>;
   refresherCourse$: Observable<RefresherCourse>;
+  private priceRefCourse: number;
 
   constructor(
     private auth: AuthService, private apollo: Apollo,
@@ -85,6 +89,7 @@ export class CourseDetailsComponent implements OnInit {
         }
       }),
       map(res => res.data.getRefresherCourse),
+      tap(res => this.priceRefCourse = res.price)
     );
   }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CoursesGQL } from 'src/app/core/graphql/queries/courses-gql';
 import { RefresherCourse } from 'src/app/core';
 
 @Component({
@@ -21,7 +20,7 @@ export class CoursesComponent implements OnInit {
     {id: 34, year: '2039'},
   ]);
 
-  constructor(private coursesGQL: CoursesGQL) { }
+  constructor() { }
 
   ngOnInit() {
     // this.refresherCourses$ = this.coursesGQL.

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as Cookies from 'js-cookie';
 import { Apollo } from 'apollo-angular';
+import * as Cookies from 'js-cookie';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { REFRESHTOKEN_GQL, RefreshTokenResponse } from './../graphql/mutations/refresh-token-gql';
 
 @Injectable({

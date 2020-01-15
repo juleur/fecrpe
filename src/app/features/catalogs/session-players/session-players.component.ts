@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Apollo } from 'apollo-angular';
 import { DashjsPlyrDriver } from '../utils/dashjs-plyr-driver/dashjs-plyr-driver';
 import Plyr from 'plyr';
-
 import { Session } from './../../../core/models/session.model';
-import { Apollo } from 'apollo-angular';
 import { SESSION_GQL, SessionResponse } from './session-gql';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'session-players',

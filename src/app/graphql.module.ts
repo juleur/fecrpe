@@ -55,6 +55,9 @@ export function createApollo() {
     cache: new InMemoryCache(),
     link: ApolloLink.from([headersMiddleware, errorAfterware, authLink]),
     defaultOptions: {
+      query: {
+        errorPolicy: 'all',
+      },
       watchQuery: {
         errorPolicy: 'all',
       },

@@ -7,8 +7,8 @@ import { ProfilComponent } from './profil/profil.component';
 import { LoggedInGuard } from 'src/app/core/guards/logged-in.guard';
 
 const routes: Routes = [
-  { path: 'mes-cours', component: CoursesComponent, canActivate: [LoggedInGuard] },
-  { path: 'mon-profil', component: ProfilComponent, canActivate: [LoggedInGuard] },
+  { path: 'mes-cours', component: CoursesComponent },
+  { path: 'mon-profil', component: ProfilComponent },
 ];
 
 @NgModule({

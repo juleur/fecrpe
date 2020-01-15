@@ -5,7 +5,15 @@
     <details>
       <summary>Sommaire</summary>
       <ng-container *ngFor="let s of refresherCourse.sessions">
-        <p class="cdetails__listcourses_group_list">{{s.type}}{{s.part}}: {{s.title}}</p>
+          <p class="cdetails__listcourses_group_list">
+            <ng-container *ngIf="s.id">
+              <a [routerLink]="[ '/formations/courses', refresherCourse.id, '/vid', s.id ]">
+                {{s.type}}: {{s.title}} - Part {{s.part}}
+              </a>
+            </ng-container>
+            {{s.type}}: {{s.title}} - Part {{s.part}}            
+          </p>
+          
       </ng-container>      
     </details>
     <div class="cdetails__info">

@@ -9,7 +9,8 @@ const routes: Routes = [
   },
   {
     path: 'u',
-    loadChildren: () => import('./features/users/users.module').then(mod => mod.UsersModule)
+    loadChildren: () => import('./features/users/users.module').then(mod => mod.UsersModule),
+    canActivate: [LoggedInGuard],
   },
   {
     path: 'formations',
@@ -18,6 +19,7 @@ const routes: Routes = [
   {
     path: 'panel/teachers',
     loadChildren: () => import('./features/teachers/teachers.module').then(mod => mod.TeachersModule),
+    canLoad: [TeacherGuard]
   }
 ];
 

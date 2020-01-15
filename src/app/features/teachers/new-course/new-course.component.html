@@ -1,12 +1,7 @@
 <div class="new-course__grid">
   <h2>Créez nouveau cours</h2>
-  
-  <span class="message-error__new-course" *ngIf="errorMessage">{{ errorMessage }}</span>
-  <span class="message-upload__new-course" *ngIf="uploadDoneMessage">{{ uploadDoneMessage }}</span>
-  <h3 *ngIf="progressUpload > 0 && progressUpload < 99">Envoie des informations ...</h3>
-  <mat-progress-bar mode="determinate" [value]="progressUpload" *ngIf="progressUpload > 0"></mat-progress-bar>
-  
-  <form class="new-course__form" [formGroup]="rcForm" (ngSubmit)="onNewCourseSubmit()" *ngIf="progressUpload === 0">
+    
+  <form class="new-course__form" [formGroup]="rcForm" (ngSubmit)="onNewCourseSubmit()">
     <mat-form-field class="title__new-course">
       <input matInput placeholder="Titre" formControlName="title">
     </mat-form-field>
@@ -19,8 +14,8 @@
       <mat-label>Cours</mat-label>
       <select matNativeControl formControlName="refresherCourse">
         <option value="" selected></option>
-        <option *ngFor="let refresherCourse of refresherCourses" [value]="refresherCourse">
-          Remise à niveau de {{ refresherCourse.subject.name }}
+        <option *ngFor="let refresherCourse of refresherCourses" [value]="refresherCourse.id">
+          Remise à niveau de {{ refresherCourse.subject.name }} {{ refresherCourse.year }}
         </option>
       </select>
     </mat-form-field>
@@ -28,7 +23,7 @@
     <span>Video:</span>
     <div class="middle_content__new-course">
       <mat-form-field class="part__new-course">
-        <input matInput placeholder="Partie n°" type="number" formControlName="part">
+        <input matInput placeholder="Partie n°" type="number" formControlName="part" min="1">
       </mat-form-field>
   
       <mat-form-field class="type__new-course">
@@ -52,14 +47,17 @@
     
     <span>Document PDF:</span>
     <div class="docs__new-courses" formArrayName="docs">
-      <ng-container *ngFor="let doc of rcForm.get('docs').controls;index as i" [formGroupName]="i">
-        <mat-form-field class="title-pdf__new-course">
-          <input matInput formControlName="title" placeholder="Nom de fichier">
-        </mat-form-field>
-        <input formControlName="file" class="doc-file__new-courses" type="file" accept="application/pdf,application/msword,application/vnd.ms-excel,image/*">
-        <button class="btn-remove-doc__new-course" type="button" mat-mini-fab (click)="removeDocs(i)">
-          <mat-icon>remove</mat-icon>
-        </button>
+      <ng-container *ngFor="let doc of docs.controls;let i = index;">
+        <ng-container [formGroupName]="i">
+          <mat-form-field class="title-pdf__new-course">
+            <input matInput formControlName="title" placeholder="Nom de fichier">
+          </mat-form-field>
+          <input class="doc-file__new-courses" type="file" (change)="onDocFileSelected($event)" accept="application/pdf,application/msword,application/docx,application/vnd.ms-excel,image/*">
+          <button class="btn-remove-doc__new-course" type="button" mat-mini-fab (click)="removeDocs(i)">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </ng-container>
+        
       </ng-container>
     </div>
     <div class="btn-add-doc__new-course">
@@ -68,9 +66,8 @@
       </button>
     </div>
 
-
     <mat-form-field class="price_new-course">
-      <input matInput placeholder="Amount" type="number" class="price_new-course" formControlName="price">
+      <input matInput placeholder="Amount" type="number" class="price_new-course" formControlName="price" min="1">
       <span matPrefix>€&nbsp;</span>
       <span matSuffix>.00</span>
     </mat-form-field>

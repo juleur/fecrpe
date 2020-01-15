@@ -6,6 +6,7 @@ import { TeachersRoutingModule } from './teachers-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NewCourseComponent } from './new-course/new-course.component';
 
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,9 +22,10 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   imports: [
     CommonModule, TeachersRoutingModule, ReactiveFormsModule,
-    MatDatepickerModule, MatIconModule,
+    MatDatepickerModule, MatIconModule, MatNativeDateModule,
     MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressBarModule,
     MatProgressSpinnerModule, MatIconModule, MatButtonModule
   ],
+  providers: [MatNativeDateModule, MatDatepickerModule],
 })
 export class TeachersModule { }
