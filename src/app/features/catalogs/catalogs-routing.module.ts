@@ -9,7 +9,7 @@ import { LoggedInGuard } from 'src/app/core/guards/logged-in.guard';
 
 const routes: Routes = [
   { path: 'courses', component: CoursesComponent },
-  { path: 'courses/:id', component: CourseDetailsComponent, canActivate: []},
+  { path: 'courses/:id', component: CourseDetailsComponent},
   { path: 'courses/:id/vid/:vid', component: SessionPlayersComponent, canActivate: [LoggedInGuard] }
 ];
 

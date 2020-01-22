@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { SIGNUP_GQL, SignupResponse } from './signup-gql';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { matchPasswordValidator } from 'src/app/shared/validators/match-pwd.directive';
 
 @Component({
   selector: 'signup',
@@ -20,10 +21,11 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
     this.registerForm = this.fb.group({
       email: ['', Validators.required],
-      username: [''],
+      username: ['', Validators.required],
+      // fullname: [''],
       password: ['', Validators.required],
       c_password: ['', Validators.required],
-    });
+    }, {validators: matchPasswordValidator});
   }
 
   onRegister(): void {
@@ -64,7 +66,7 @@ export class SignupComponent implements OnInit {
         });
         this.registerForm.reset();
         setTimeout(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/auth/login']);
         }, 4000);
       }
     });

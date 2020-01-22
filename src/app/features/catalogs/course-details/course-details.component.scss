@@ -109,3 +109,20 @@ details[open] summary {
   border-bottom: 1px solid #aaa;
   margin-bottom: .5em;
 }
+
+.no__course_details1 {
+  text-align: center;
+  font-size: 3.1em;
+}
+
+.no__course_details2 {
+  text-align: center;
+  font-size: 1.4em;
+  a {
+    text-decoration: none;
+    color: blueviolet;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

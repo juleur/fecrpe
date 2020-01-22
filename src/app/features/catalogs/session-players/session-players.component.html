@@ -1,4 +1,4 @@
-<h2 class="session-player__title">[{{ session?.type | titlecase }}] {{ session?.title | titlecase }}<span *ngIf="session?.part"> - Part {{ session?.part }}</span></h2>
+<h2 class="session-player__title">[{{ session?.type | titlecase }}] {{ session?.title | titlecase }}<span *ngIf="session?.sessionNumber"> - Part {{ session?.sessionNumber }}</span></h2>
 <div class="session-player__grid">
   <div class="session-player__video" plyr [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources"></div>
   <!-- *ngIf="sources?.length > 0" -->

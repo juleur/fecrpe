@@ -1,5 +1,7 @@
-<div class="grid__courses" *ngIf="(refresherCourses$ | async) as refresherCourses">
+<div class="grid__courses" *ngIf="refresherCourses">
   <ng-container *ngFor="let rc of refresherCourses">
     <course-card [refresherCourse]="rc"></course-card>
   </ng-container>
 </div>
+
+<div class="no__courses_all_user">Aucun cours trouvé</div>

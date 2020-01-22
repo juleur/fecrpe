@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import * as Cookies from 'js-cookie';
 import { LOGIN_GQL, TokenResponse } from './login-gql';
@@ -13,13 +13,12 @@ import { AuthService } from 'src/app/core';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
     private router: Router, private toast: ToastrService,
     private auth: AuthService
   ) {}
-  private querySub: Subscription;
   loginForm: FormGroup;
 
   ngOnInit() {
@@ -30,7 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin(): void {
-    this.querySub = this.apollo.watchQuery<TokenResponse>({
+    this.apollo.watchQuery<TokenResponse>({
       query: LOGIN_GQL,
       variables: {
         input: {
@@ -39,8 +38,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       },
       fetchPolicy: 'no-cache'
-    }).valueChanges.subscribe(res => {
-      if (res.data === undefined && res.data === null) {
+    }).valueChanges.pipe(take(1)).subscribe(res => {
+      if (res.hasOwnProperty('errors')) {
         for (const err of res.errors) {
           switch (err.extensions.statusText) {
             case 'Not Found':
@@ -64,9 +63,5 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.querySub.unsubscribe();
   }
 }

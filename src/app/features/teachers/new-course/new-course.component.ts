@@ -3,8 +3,9 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { REFRESHERCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
-import { Type, RefresherCourse } from 'src/app/core/models';
+import { Type, RefresherCourse, Section } from 'src/app/core/models';
 import { AuthService } from './../../../core/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'new-course',
@@ -15,35 +16,36 @@ export class NewCourseComponent implements OnInit, OnDestroy {
   private querySub: Subscription;
   rcForm: FormGroup;
   typesCourse: string[] = Object.values(Type);
+  sectionCourse: string[] = Object.values(Section);
   refresherCourses: RefresherCourse[];
 
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
-    private auth: AuthService
+    private toast: ToastrService
   ) {}
 
   ngOnInit() {
-    this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
-      query: REFRESHERCOURSE_GQL,
-    }).valueChanges
-    .subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        console.log(res);
-      }
-      this.refresherCourses = res.data.getRefresherCourses.filter(v => v.isFinished === false);
-    });
     this.rcForm = this.fb.group({
       refresherCourse: ['', [Validators.required]],
       title: ['', [Validators.required, Validators.minLength(5)]],
+      section: ['', [Validators.required]],
       type: ['', [Validators.required]],
       description: ['', [Validators.required, Validators.minLength(5)]],
-      part: [''],
+      sessionNumber: [null],
       recordedOn: ['', [Validators.required]],
       file: [null, [Validators.required]],
       docs: this.fb.array([]),
       price: ['', [Validators.required]],
     });
-
+    this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
+      query: REFRESHERCOURSE_GQL,
+    }).valueChanges
+      .subscribe(res => {
+        if (res.hasOwnProperty('errors')) {
+          this.rcForm.controls.refresherCourse.disable();
+        }
+        this.refresherCourses = res.data.getRefresherCourses.filter(v => v.isFinished === false);
+      });
   }
 
   get docs(): FormArray {

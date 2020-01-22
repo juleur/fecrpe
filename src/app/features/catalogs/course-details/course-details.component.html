@@ -1,4 +1,4 @@
-<div class="cdetails__grid" *ngIf="refresherCourse$ | async as refresherCourse">
+<div class="cdetails__grid" *ngIf="refresherCourse">
   <span class="cdetails__title">{{ refresherCourse.title }}</span>
   <span class="cdetails__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae necessitatibus earum nam adipisci ex? Incidunt sed ad sapiente nobis earum quo explicabo hic aliquam, aperiam, debitis reiciendis iusto corporis perspiciatis.</span>
   <div class="cdetails__section">
@@ -8,10 +8,10 @@
           <p class="cdetails__listcourses_group_list">
             <ng-container *ngIf="s.id">
               <a [routerLink]="[ '/formations/courses', refresherCourse.id, '/vid', s.id ]">
-                {{s.type}}: {{s.title}} - Part {{s.part}}
+                {{s.type}}: {{s.title}} - Part {{s.sessionNumber}}
               </a>
             </ng-container>
-            {{s.type}}: {{s.title}} - Part {{s.part}}            
+            {{s.type}}: {{s.title}} - Part {{s.sessionNumber}}
           </p>
           
       </ng-container>      
@@ -24,10 +24,14 @@
         <span>Années:</span> {{ refresherCourse.year }}
       </p>
       <p class="cdetails__ttsession">
-        <span>Audiovisuel:</span> 246 heures
+        <span>Audiovisuel:</span> {{ refresherCourse.totalDuration }}
       </p>      
       <div class="auth__new-details" #paypalButton *ngIf="isUserLoggedIn$ | async"></div>
       <a class="connect__new-details" [routerLink]="['/auth/login']" *ngIf="!(isUserLoggedIn$ | async)">SE CONNECTER</a>
     </div>
   </div>
+</div>
+
+<div class="no__course_details1">Désolé, nous ne pouvons trouver cette page</div>
+<div class="no__course_details2">Retounez sur la <a [routerLink]="['/']">page d'accueil</a>
 </div>

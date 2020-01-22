@@ -1,13 +1,15 @@
 import gql from 'graphql-tag';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
 
-export const MY_REFRESHERCOURSE_GQL = gql`
-  query MyRefresherCourses($userId: Int!) {
-    myRefresherCourses(userId: $userId) {
+export const REFRESHERCOURSE_GQL = gql`
+  query GetRefresherCourses($subjectId: Int) {
+    getRefresherCourses(subjectId: $subjectId) {
       id
       year
       isFinished
+      price
       totalDuration
+      isPurchased
       subject {
         id
         name
@@ -20,6 +22,6 @@ export const MY_REFRESHERCOURSE_GQL = gql`
   }
 `;
 
-export interface MyRefresherCoursesResponse {
-  myRefresherCourses: RefresherCourse[];
+export interface RefresherCoursesResponse {
+  getRefresherCourses: RefresherCourse[];
 }
