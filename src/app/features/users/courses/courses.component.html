@@ -1,5 +1,10 @@
-<div class="grid__mycourses" *ngIf="(refresherCourses$ | async) as refresherCourses">
+<div class="grid__mycourses" *ngIf="refresherCourses">
   <ng-container *ngFor="let rc of refresherCourses">
     <course-card [refresherCourse]="rc"></course-card>
   </ng-container>
+</div>
+
+<div class="no__courses">Vous n'avez aucun cours dans votre galerie.</div>
+<div class="no__course_link">
+  <a [routerLink]="['/formations/courses']">Voir Cours</a>
 </div>

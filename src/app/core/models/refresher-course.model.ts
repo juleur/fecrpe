@@ -7,10 +7,11 @@ export interface RefresherCourse {
     year?: string;
     isFinished?: boolean;
     price?: number;
-    subject?: Subject;
-    sessions?: Session[];
     createdAt?: string;
     updatedAt?: string;
+    subject?: Subject;
+    sessions?: Session[];
+    totalDuration?: string;
     isPurchased?: boolean;
-    author?: User;
+    teachers?: User[];
 }

@@ -1,32 +1,75 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { MY_REFRESHERCOURSE_GQL, MyRefresherCourseResponse } from './my-courses-gql';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
+import { Apollo } from 'apollo-angular';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import * as Cookies from 'js-cookie';
+import { AuthService } from 'src/app/core';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'my-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss']
 })
-export class CoursesComponent implements OnInit {
-  refresherCourses$: Observable<RefresherCourse[]> = of([
-    { id: 23, year: '2018' },
-    { id: 43, year: '2020' },
-    { id: 19, year: '2017' },
-    { id: 76, year: '2018' },
-    { id: 34, year: '2020' },
-    { id: 78, year: '2000' },
-    { id: 45, year: '2034' },
-    { id: 9, year: '2021' },
-  ]);
+export class CoursesComponent implements OnInit, OnDestroy {
+  private querySub: Subscription;
+  private jwtHelper = new JwtHelperService();
+  refresherCourses: RefresherCourse[];
 
-  constructor() {}
+  constructor(
+    private apollo: Apollo, private auth: AuthService,
+    private toast: ToastrService, private router: Router
+  ) {}
 
   ngOnInit() {
-    // this.refresherCourses$ = this.myCoursesGQL
-    //   .watch().valueChanges.pipe(
-    //     map(res => res.data.refresherCourses),
-    //   );
+    if (
+      this.jwtHelper.decodeToken(Cookies.get('access_token')) != null &&
+      !this.jwtHelper.isTokenExpired(Cookies.get('access_token'))
+    ) {
+      this.querySub = this.apollo.watchQuery<MyRefresherCourseResponse>({
+        query: MY_REFRESHERCOURSE_GQL,
+        variables: {
+          userId: this.auth.getUserIDToken()
+        },
+        fetchPolicy: 'cache-and-network'
+      }).valueChanges.subscribe(res => {
+        if (res.hasOwnProperty('errors')) {
+          for (const err of res.errors) {
+            switch (err.extensions.statusText) {
+              case 'Unauthorized':
+                this.toast.error(`${err.message} !`, 'Mes Cours', {
+                  positionClass: 'toast-top-full-width',
+                  timeOut: 3000
+                });
+                this.apollo.client.clearStore();
+                setTimeout(() => {
+                  this.router.navigate(['/']);
+                }, 2800);
+                break;
+              case 'Internal Server Error':
+                this.toast.error(`${err.message} !`, 'Mes Cours', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 5000
+                });
+                break;
+            }
+          }
+        }
+        if (res.hasOwnProperty('data')) {
+          console.log(typeof(res.data.myRefresherCourses));
+        }
+        // if (res.hasOwnProperty('data')) {
+        //   // this.refresherCourses = res.data.myRefresherCourses;
+        // }
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.querySub.unsubscribe();
   }
 }

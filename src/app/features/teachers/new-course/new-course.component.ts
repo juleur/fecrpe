@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { REFRESHERCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
-
-import { Type, RefresherCourse } from 'src/app/core/models';
-import { Apollo } from 'apollo-angular';
-import { map, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Apollo } from 'apollo-angular';
+import { REFRESHERCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
+import { Type, RefresherCourse } from 'src/app/core/models';
 import { AuthService } from './../../../core/services/auth.service';
 
 @Component({
@@ -21,7 +19,7 @@ export class NewCourseComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
-    private auth: AuthService, private cd: ChangeDetectorRef
+    private auth: AuthService
   ) {}
 
   ngOnInit() {
@@ -32,7 +30,7 @@ export class NewCourseComponent implements OnInit, OnDestroy {
       if (res.hasOwnProperty('errors')) {
         console.log(res);
       }
-      this.refresherCourses = res.data.getRefresherCourses.filter(v => v.isFinished === false && v.author.id == this.auth.getUserIDToken());
+      this.refresherCourses = res.data.getRefresherCourses.filter(v => v.isFinished === false);
     });
     this.rcForm = this.fb.group({
       refresherCourse: ['', [Validators.required]],
@@ -75,53 +73,32 @@ export class NewCourseComponent implements OnInit, OnDestroy {
   }
 
   onNewCourseSubmit(): void {
-    let params;
-    if (this.rcForm.value.docs.length > 0) {
-      params = {
-        refresherCourseId: this.rcForm.value.refresherCourse,
-        title: this.rcForm.value.title,
-        type: this.rcForm.value.type === 'leçon' ? 'lesson' : 'exercise',
-        description: this.rcForm.value.description,
-        part: this.rcForm.value.part,
-        recordedOn: this.rcForm.value.recordedOn,
-        videoFile: this.rcForm.value.file,
-        price: this.rcForm.value.price
-      };
-    }
-    params = {
-      refresherCourseId: this.rcForm.value.refresherCourse,
-      title: this.rcForm.value.title,
-      type: this.rcForm.value.type === 'leçon' ? 'lesson' : 'exercise',
-      description: this.rcForm.value.description,
-      part: this.rcForm.value.part,
-      recordedOn: this.rcForm.value.recordedOn,
-      videoFile: this.rcForm.value.file,
-      docFiles: this.rcForm.value.docs,
-      price: this.rcForm.value.price
-    };
-    console.log(this.rcForm.value.file);
     this.apollo.mutate<NewCourseResponse>({
       mutation: NEWCOURSE_GQL,
       variables: {
-        input: params
+        input: {
+          refresherCourseId: this.rcForm.value.refresherCourse,
+          title: this.rcForm.value.title,
+          type: this.rcForm.value.type === 'leçon' ? 'LESSON' : 'EXERCISE',
+          description: this.rcForm.value.description,
+          part: this.rcForm.value.part,
+          recordedOn: this.rcForm.value.recordedOn,
+          videoFile: this.rcForm.value.file,
+          // docFiles: this.rcForm.value.docs,
+          price: this.rcForm.value.price
+        }
       },
       context: {
         useMultipart: true
       },
-    }).subscribe(v => console.log(v));
+    }).subscribe(v => console.log(v.data.createRefresherCourse));
   }
 
   onFileSelected(event: any): void {
-    const reader = new FileReader();
     if (event.target.files && event.target.files.length) {
-      const file = (event.target as HTMLInputElement).files[0];
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        this.rcForm.controls.file.patchValue(reader.result);
-        this.rcForm.controls.file.updateValueAndValidity();
-        this.cd.markForCheck();
-      };
+      const file = event.target.files[0];
+      this.rcForm.controls.file.patchValue(file);
+      this.rcForm.controls.file.updateValueAndValidity();
     }
   }
 

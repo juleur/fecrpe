@@ -42,7 +42,7 @@
         <mat-datepicker touchUi #picker></mat-datepicker>
       </mat-form-field>
 
-      <input class="file__new-course" type="file" accept="video/mp4,video/x-m4v,video/*" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
+      <input class="file__new-course" type="file" accept="video/mp4" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
     </div>
     
     <span>Document PDF:</span>
@@ -52,7 +52,7 @@
           <mat-form-field class="title-pdf__new-course">
             <input matInput formControlName="title" placeholder="Nom de fichier">
           </mat-form-field>
-          <input class="doc-file__new-courses" type="file" (change)="onDocFileSelected($event)" accept="application/pdf,application/msword,application/docx,application/vnd.ms-excel,image/*">
+          <input class="doc-file__new-courses" type="file" (change)="onDocFileSelected($event)" accept="application/pdf,application/msword,.doc,.docx,application/vnd.ms-excel,image/*">
           <button class="btn-remove-doc__new-course" type="button" mat-mini-fab (click)="removeDocs(i)">
             <mat-icon>remove</mat-icon>
           </button>

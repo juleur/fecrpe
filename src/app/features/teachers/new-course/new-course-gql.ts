@@ -2,13 +2,13 @@ import gql from 'graphql-tag';
 import { RefresherCourse } from 'src/app/core';
 
 export const NEWCOURSE_GQL = gql`
-  mutation CreateRefresherCourse($input: NewSessionCourse!){
+  mutation CreateRefresherCourse($input: NewSessionCourse!) {
     createRefresherCourse(input: $input)
   }
 `;
 
 export interface NewCourseResponse {
-  CreateRefresherCourse: boolean;
+  createRefresherCourse: boolean;
 }
 
 export const REFRESHERCOURSE_GQL = gql`
@@ -21,8 +21,9 @@ export const REFRESHERCOURSE_GQL = gql`
         id
         name
       }
-      author {
+      teachers {
         id
+        username
       }
     }
   }

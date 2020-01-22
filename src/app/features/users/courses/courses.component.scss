@@ -8,3 +8,22 @@
   justify-items: center;
   row-gap: 55px;
 }
+
+.no__courses {
+  text-align: center;
+  font-size: 1.6em;
+  color: maroon;
+}
+
+.no__course_link {
+  text-align: center;
+  font-size: 1.6em;
+  a {
+    color:  black;
+    text-decoration: none;
+    &:hover {
+      color: bisque;
+      text-shadow: 0px 0px 4px black;
+    }
+  }
+}

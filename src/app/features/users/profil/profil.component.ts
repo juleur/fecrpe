@@ -53,8 +53,6 @@ export class ProfilComponent implements OnInit, OnDestroy {
                   positionClass: 'toast-top-right',
                   timeOut: 3000
                 });
-                Cookies.remove('access_token');
-                Cookies.remove('refresh_token');
                 this.apollo.client.clearStore();
                 setTimeout(() => {
                   this.router.navigate(['/']);
