@@ -39,9 +39,19 @@ export class SignupComponent implements OnInit {
         }
       },
       fetchPolicy: 'no-cache'
-    }).subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        for (const err of res.errors) {
+    }).subscribe(({data, errors}) => {
+      if (data) {
+        this.toast.success('Inscription effectuée avec succès', 'Création de compte', {
+          positionClass: 'toast-top-full-width',
+          timeOut: 5000
+        });
+        this.registerForm.reset();
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']);
+        }, 3000);
+      }
+      if (errors) {
+        for (const err of errors) {
           switch (err.extensions.statusText) {
             case 'Conflict':
               this.toast.warning(`${err.message}`, 'Création de compte', {
@@ -59,15 +69,6 @@ export class SignupComponent implements OnInit {
         }
         this.registerForm.get('email').reset();
         this.registerForm.get('username').reset();
-      } else {
-        this.toast.success('Inscription effectuée avec succès', 'Création de compte', {
-          positionClass: 'toast-top-full-width',
-          timeOut: 5000
-        });
-        this.registerForm.reset();
-        setTimeout(() => {
-          this.router.navigate(['/auth/login']);
-        }, 4000);
       }
     });
   }

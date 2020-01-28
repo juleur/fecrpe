@@ -14,7 +14,8 @@ import { GraphQLModule } from './graphql.module';
   declarations: [AppComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule, AppRoutingModule,
-    ToastrModule.forRoot(), GraphQLModule, HttpClientModule, CoreModule
+    ToastrModule.forRoot(), GraphQLModule, HttpClientModule,
+    CoreModule
   ],
   bootstrap: [AppComponent]
 })

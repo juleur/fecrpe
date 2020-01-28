@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { RefresherCourse } from 'src/app/core';
 
 export const NEWCOURSE_GQL = gql`
-  mutation CreateRefresherCourse($input: NewSessionCourse!) {
+  mutation CreateRefresherCourse($input: NewSessionInput!) {
     createRefresherCourse(input: $input)
   }
 `;
@@ -11,16 +11,14 @@ export interface NewCourseResponse {
   createRefresherCourse: boolean;
 }
 
-export const REFRESHERCOURSE_GQL = gql`
-  query GetRefresherCourses($subjectId: Int) {
-    getRefresherCourses(subjectId: $subjectId) {
+export const REFRESHERSCOURSE_GQL = gql`
+  query RefresherCourses($input: RefresherCourseInput!) {
+    refresherCourses(input: $input) {
       id
+      subject
       year
       isFinished
-      subject {
-        id
-        name
-      }
+      isPurchased
       teachers {
         id
         username
@@ -30,5 +28,5 @@ export const REFRESHERCOURSE_GQL = gql`
 `;
 
 export interface RefresherCoursesResponse {
-  getRefresherCourses: RefresherCourse[];
+  refresherCourses: [RefresherCourse];
 }

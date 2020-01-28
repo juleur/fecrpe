@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
     private router: Router, private toast: ToastrService,
     private auth: AuthService
   ) {}
+  loading: boolean;
   loginForm: FormGroup;
 
   ngOnInit() {
@@ -37,10 +38,17 @@ export class LoginComponent implements OnInit {
           password: this.loginForm.value.password
         }
       },
-      fetchPolicy: 'no-cache'
-    }).valueChanges.pipe(take(1)).subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        for (const err of res.errors) {
+      fetchPolicy: 'cache-and-network',
+    }).valueChanges.pipe(take(2)).subscribe(({data, loading, errors}) => {
+      this.loading = loading;
+      if (data) {
+        Cookies.set('access_token', data.login.jwt, { secure: false });
+        Cookies.set('refresh_token', data.login.refreshToken, { secure: false, expires: 14 });
+        this.auth.changeAuthStatus(true);
+        this.router.navigate(['/']);
+      }
+      if (errors) {
+        for (const err of errors) {
           switch (err.extensions.statusText) {
             case 'Not Found':
               this.toast.warning(`${err.message}`, 'Se Connecter', {
@@ -56,11 +64,6 @@ export class LoginComponent implements OnInit {
               break;
           }
         }
-      } else {
-        Cookies.set('access_token', res.data.login.jwt, { secure: false });
-        Cookies.set('refresh_token', res.data.login.refreshToken, { secure: false, expires: 14 });
-        this.auth.changeAuthStatus(true);
-        this.router.navigate(['/']);
       }
     });
   }

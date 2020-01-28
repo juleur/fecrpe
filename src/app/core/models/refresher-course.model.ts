@@ -1,16 +1,14 @@
-import { Subject } from './subject.model';
-import { Session } from './session.model';
 import { User } from './user.model';
+import { SubjectEnum } from './enums.model';
 
 export interface RefresherCourse {
     id?: number;
+    subject?: SubjectEnum;
     year?: string;
     isFinished?: boolean;
     price?: number;
     createdAt?: string;
     updatedAt?: string;
-    subject?: Subject;
-    sessions?: Session[];
     totalDuration?: string;
     isPurchased?: boolean;
     teachers?: User[];

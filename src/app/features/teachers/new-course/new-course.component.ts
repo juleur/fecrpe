@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { REFRESHERCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
-import { Type, RefresherCourse, Section } from 'src/app/core/models';
-import { AuthService } from './../../../core/services/auth.service';
+import { REFRESHERSCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
+import { RefresherCourse } from 'src/app/core/models';
+import { TypeEnum, SectionEnum, SubjectEnum } from './../../../core/models/enums.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -15,9 +16,10 @@ import { ToastrService } from 'ngx-toastr';
 export class NewCourseComponent implements OnInit, OnDestroy {
   private querySub: Subscription;
   rcForm: FormGroup;
-  typesCourse: string[] = Object.values(Type);
-  sectionCourse: string[] = Object.values(Section);
+  typesCourse: string[] = Object.values(TypeEnum);
+  sectionsCourse: string[] = Object.values(SectionEnum);
   refresherCourses: RefresherCourse[];
+  loading: boolean;
 
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
@@ -38,14 +40,40 @@ export class NewCourseComponent implements OnInit, OnDestroy {
       price: ['', [Validators.required]],
     });
     this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
-      query: REFRESHERCOURSE_GQL,
-    }).valueChanges
-      .subscribe(res => {
-        if (res.hasOwnProperty('errors')) {
-          this.rcForm.controls.refresherCourse.disable();
+      query: REFRESHERSCOURSE_GQL,
+      variables: {
+        input: {}
+      },
+      fetchPolicy: 'no-cache'
+    }).valueChanges.subscribe(({data, loading, errors}) => {
+      if (loading) {
+        this.rcForm.disable();
+      }
+      if (data) {
+        this.refresherCourses = data.refresherCourses.filter(rc => rc.isFinished === false);
+        if (this.refresherCourses.length === 0) {
+          this.rcForm.disable();
+        } else {
+          this.refresherCourses = this.refresherCourses.filter(rc => {
+            for (const k of Object.keys(SubjectEnum)) {
+              if (rc.subject === k) {
+                rc.subject = SubjectEnum[k];
+                return rc;
+              }
+            }
+          });
         }
-        this.refresherCourses = res.data.getRefresherCourses.filter(v => v.isFinished === false);
-      });
+      }
+      if (errors) {
+        this.rcForm.disable();
+        for (const err of errors) {
+          this.toast.error(`${err.message}`, 'Création de cours', {
+            positionClass: 'toast-top-full-width',
+            timeOut: 4000
+          });
+        }
+      }
+    });
   }
 
   get docs(): FormArray {
@@ -75,25 +103,44 @@ export class NewCourseComponent implements OnInit, OnDestroy {
   }
 
   onNewCourseSubmit(): void {
+    this.loading = true;
     this.apollo.mutate<NewCourseResponse>({
       mutation: NEWCOURSE_GQL,
       variables: {
         input: {
           refresherCourseId: this.rcForm.value.refresherCourse,
           title: this.rcForm.value.title,
+          section: this.rcForm.value.section === 'Scientifique' ? 'SCIENTIFIC' : 'DIALECTICAL',
           type: this.rcForm.value.type === 'leçon' ? 'LESSON' : 'EXERCISE',
           description: this.rcForm.value.description,
-          part: this.rcForm.value.part,
+          sessionNumber: this.rcForm.value.sessionNumber,
           recordedOn: this.rcForm.value.recordedOn,
           videoFile: this.rcForm.value.file,
-          // docFiles: this.rcForm.value.docs,
+          docFiles: this.rcForm.value.docs,
           price: this.rcForm.value.price
         }
       },
       context: {
         useMultipart: true
       },
-    }).subscribe(v => console.log(v.data.createRefresherCourse));
+    }).subscribe(({data, errors}) => {
+      if (data) {
+        this.toast.success('Le cours a bien été enregistré. Il sera automatiquement mis en ligne dès la fin du traitement video.', 'Création de cours', {
+          positionClass: 'toast-top-full-width',
+          timeOut: 3000
+        });
+        this.rcForm.reset();
+      }
+      if (errors) {
+        for (const err of errors) {
+          this.toast.error(`${err.message}`, 'Création de cours', {
+            positionClass: 'toast-top-full-width',
+            timeOut: 5000
+          });
+        }
+      }
+    });
+    this.loading = false;
   }
 
   onFileSelected(event: any): void {

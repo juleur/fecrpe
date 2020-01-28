@@ -52,15 +52,15 @@ input.price_new-course {
   .middle_content__new-course {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 2;
+    grid-template-rows: 3;
     gap: 20px;
-    .part__new-course {
+    .section__new-course {
       input {
         margin-bottom: 3px;
       }
     }
     .file__new-course {
-      padding-top: 20px;
+      justify-self: center;
     }
   }
   .docs__new-courses {

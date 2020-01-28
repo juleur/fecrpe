@@ -8,6 +8,7 @@ import { ProfilComponent } from './profil/profil.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseCardComponent } from './courses/course-card/course-card.component';
 
+
 @NgModule({
   declarations: [
     ProfilComponent, CoursesComponent, CourseCardComponent

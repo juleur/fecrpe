@@ -18,7 +18,7 @@ export class TeacherGuard implements CanLoad {
     private apollo: Apollo, private auth: AuthService,
     private router: Router, private toast: ToastrService
   ) {}
-
+  status: boolean;
   canLoad(): Observable<boolean> | boolean {
     if (this.jwtHelper.decodeToken(Cookies.get('access_token')) === null) {
       return false;
@@ -30,9 +30,9 @@ export class TeacherGuard implements CanLoad {
       },
       fetchPolicy: 'no-cache'
     }).pipe(
-      tap(res => {
-        if (res.hasOwnProperty('errors')) {
-          for (const err of res.errors) {
+      tap(({errors}) => {
+        if (errors) {
+          for (const err of errors) {
             switch (err.extensions.statusText) {
               case 'Forbidden':
                 this.toast.error(`${err.message}`, 'Portail Professeur', {
@@ -53,7 +53,7 @@ export class TeacherGuard implements CanLoad {
           }, 2000);
         }
       }),
-      map(res => res.data.isTeacher),
+      map(({data}) => data.authTeacher)
     );
   }
 }
