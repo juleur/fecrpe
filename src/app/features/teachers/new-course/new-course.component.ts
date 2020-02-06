@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { REFRESHERSCOURSE_GQL, RefresherCoursesResponse, NEWCOURSE_GQL, NewCourseResponse } from './new-course-gql';
 import { RefresherCourse } from 'src/app/core/models';
@@ -14,12 +13,13 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./new-course.component.scss']
 })
 export class NewCourseComponent implements OnInit, OnDestroy {
+  @ViewChild('videoFileInput') videoFileInputRef: ElementRef;
   private querySub: Subscription;
   rcForm: FormGroup;
   typesCourse: string[] = Object.values(TypeEnum);
   sectionsCourse: string[] = Object.values(SectionEnum);
   refresherCourses: RefresherCourse[];
-  loading: boolean;
+  loading = false ;
 
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
@@ -37,7 +37,6 @@ export class NewCourseComponent implements OnInit, OnDestroy {
       recordedOn: ['', [Validators.required]],
       file: [null, [Validators.required]],
       docs: this.fb.array([]),
-      price: ['', [Validators.required]],
     });
     this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
       query: REFRESHERSCOURSE_GQL,
@@ -82,7 +81,7 @@ export class NewCourseComponent implements OnInit, OnDestroy {
 
   addDocs(): void {
     this.docs.push(this.fb.group({
-      title: ['', Validators.required],
+      title: [''],
       file: [null, Validators.required]
     }));
   }
@@ -104,6 +103,7 @@ export class NewCourseComponent implements OnInit, OnDestroy {
 
   onNewCourseSubmit(): void {
     this.loading = true;
+    console.log(this.loading);
     this.apollo.mutate<NewCourseResponse>({
       mutation: NEWCOURSE_GQL,
       variables: {
@@ -117,7 +117,6 @@ export class NewCourseComponent implements OnInit, OnDestroy {
           recordedOn: this.rcForm.value.recordedOn,
           videoFile: this.rcForm.value.file,
           docFiles: this.rcForm.value.docs,
-          price: this.rcForm.value.price
         }
       },
       context: {
@@ -129,7 +128,15 @@ export class NewCourseComponent implements OnInit, OnDestroy {
           positionClass: 'toast-top-full-width',
           timeOut: 3000
         });
+        this.videoFileInputRef.nativeElement.value = '';
+        for (const i of Array(this.docs.length).keys()) {
+          this.docs.removeAt(i);
+        }
         this.rcForm.reset();
+        Object.keys(this.rcForm.controls).forEach(key => {
+          this.rcForm.controls[key].clearValidators();
+          this.rcForm.controls[key].updateValueAndValidity();
+        });
       }
       if (errors) {
         for (const err of errors) {
@@ -139,8 +146,8 @@ export class NewCourseComponent implements OnInit, OnDestroy {
           });
         }
       }
+      this.loading = false;
     });
-    this.loading = false;
   }
 
   onFileSelected(event: any): void {
@@ -162,6 +169,7 @@ export class NewCourseComponent implements OnInit, OnDestroy {
       this.rcForm.controls.description.valid &&
       this.rcForm.controls.refresherCourse.valid &&
       this.rcForm.controls.type.valid &&
+      this.rcForm.controls.section.valid &&
       this.rcForm.controls.recordedOn.valid
     ) {
       return true;

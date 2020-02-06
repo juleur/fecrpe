@@ -13,8 +13,7 @@ import { AuthService } from '../services';
 })
 export class LoggedInGuard implements CanActivate {
   constructor(
-    private router: Router, private apollo: Apollo,
-    private auth: AuthService
+    private router: Router, private apollo: Apollo, private auth: AuthService
   ) {}
   private jwtHelper = new JwtHelperService();
 

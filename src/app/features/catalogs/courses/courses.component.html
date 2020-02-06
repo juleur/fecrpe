@@ -4,4 +4,4 @@
   </ng-container>
 </div>
 
-<div class="no__courses_all_user">Aucun cours trouvé</div>
+<div class="no__courses_all_user" *ngIf="refresherCourses.length === 0">Aucun cours trouvé</div>

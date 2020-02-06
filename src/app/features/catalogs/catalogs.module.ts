@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PlyrModule } from 'ngx-plyr';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { CatalogsRoutingModule } from './catalogs-routing.module';
 
 import { CoursesComponent } from './courses/courses.component';
@@ -12,6 +13,7 @@ import { SessionPlayersComponent } from './session-players/session-players.compo
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+
 @NgModule({
   declarations: [
     CoursesComponent, CourseDetailsComponent,
@@ -19,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   imports: [
     CommonModule, CatalogsRoutingModule, RouterModule, PlyrModule,
-    MatButtonModule, MatIconModule
+    MatButtonModule, MatIconModule, SharedModule
   ],
 })
 export class CatalogsModule { }

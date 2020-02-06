@@ -1,37 +1,31 @@
 <div class="cdetails__grid" *ngIf="refresherCourse">
-  <span class="cdetails__title">{{ refresherCourse.title }}</span>
-  <span class="cdetails__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae necessitatibus earum nam adipisci ex? Incidunt sed ad sapiente nobis earum quo explicabo hic aliquam, aperiam, debitis reiciendis iusto corporis perspiciatis.</span>
+  <span class="cdetails__title">Remise à niveau {{ refresherCourse.subject | translateEnums | titlecase }}</span>
   <div class="cdetails__section">
     <details>
       <summary>Sommaire</summary>
-      <ng-container *ngFor="let s of refresherCourse.sessions">
-          <p class="cdetails__listcourses_group_list">
-            <ng-container *ngIf="s.id">
-              <a [routerLink]="[ '/formations/courses', refresherCourse.id, '/vid', s.id ]">
-                {{s.type}}: {{s.title}} - Part {{s.sessionNumber}}
-              </a>
-            </ng-container>
-            {{s.type}}: {{s.title}} - Part {{s.sessionNumber}}
-          </p>
-          
+      <ng-container *ngFor="let s of sessions">
+          <div class="cdetails__listcourses_group_list">
+            <span>{{s.section | translateEnums }} - {{s.type | translateEnums | uppercase}}: {{s.title}}</span>
+            <a *ngIf="(isUserLoggedIn$ | async) && refresherCourse.isPurchased" [routerLink]="[ '/formations/courses', refresherCourse.id, 'vid', s.id ]">
+              <i class="material-icons input-icon">input</i>
+            </a>
+          </div>          
       </ng-container>      
     </details>
     <div class="cdetails__info">
       <p class="cdetails__teacher">
-        <span>Professeur:</span> Mr Chermak
+        <span>Professeur:</span> {{ teachers }}
       </p>
       <p class="cdetails__year">
         <span>Années:</span> {{ refresherCourse.year }}
       </p>
       <p class="cdetails__ttsession">
-        <span>Audiovisuel:</span> {{ refresherCourse.totalDuration }}
+        <span>Durée Totale des sessions:</span> {{ refresherCourse.totalDuration | translateDuration }}
       </p>      
-      <div class="auth__new-details" #paypalButton *ngIf="isUserLoggedIn$ | async"></div>
+      <div class="auth__new-details" #paypalButton *ngIf="(isUserLoggedIn$ | async) && !refresherCourse.isPurchased"></div>
       <a class="connect__new-details" [routerLink]="['/auth/login']" *ngIf="!(isUserLoggedIn$ | async)">SE CONNECTER</a>
     </div>
   </div>
 </div>
 
-<div class="no__course_details1">Désolé, nous ne pouvons trouver cette page</div>
-<div class="no__course_details2">Retounez sur la <a [routerLink]="['/']">page d'accueil</a>
-</div>
+<div class="no__course_details2" *ngIf="showError">Retounez sur la <a [routerLink]="['/']">page d'accueil</a></div>

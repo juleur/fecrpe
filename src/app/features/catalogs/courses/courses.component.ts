@@ -1,47 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { RefresherCourse } from 'src/app/core';
-import { Apollo } from 'apollo-angular';
-
-import { REFRESHERCOURSE_GQL, RefresherCoursesResponse } from './courses-gql';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss']
 })
-export class CoursesComponent implements OnInit, OnDestroy {
-  private querySub: Subscription;
+export class CoursesComponent implements OnInit {
   refresherCourses: RefresherCourse[];
-  constructor(private apollo: Apollo, private toast: ToastrService) { }
 
-  ngOnInit() {
-    this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
-      query: REFRESHERCOURSE_GQL,
-      fetchPolicy: 'cache-and-network'
-    }).valueChanges.subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        for (const err of res.errors) {
-          this.toast.error(`${err.message}`, 'Se Connecter', {
-            positionClass: 'toast-top-full-width',
-            timeOut: 4000
-          });
-        }
+  constructor(private toast: ToastrService, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.data.subscribe(res => {
+      if (res.courses.data) {
+        this.refresherCourses = res.courses.data.refresherCourses;
       }
-      if (res.data !== undefined) {
-        this.refresherCourses = res.data.getRefresherCourses.filter(v => {
-          if (v.isPurchased === true) {
-            v.price = null;
-            return v;
+      if (res.courses.data.errors) {
+        for (const err of res.course.errors) {
+          switch (err.extensions.statusText) {
+            case 'Not Found':
+              this.toast.warning(`${err.message}`, 'Cours', {
+                positionClass: 'toast-top-full-width',
+                timeOut: 3000
+              });
+              break;
+            case 'Internal Server Error':
+              this.toast.error(`${err.message}`, 'Cours', {
+                positionClass: 'toast-top-full-width',
+                timeOut: 3000
+              });
+              break;
           }
-        });
+        }
       }
     });
   }
 
-  ngOnDestroy() {
-    this.querySub.unsubscribe();
+  ngOnInit() {
   }
 }

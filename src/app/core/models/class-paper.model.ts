@@ -1,7 +1,7 @@
-export interface Video {
+export interface ClassPaper {
   id?: number;
+  title?: string;
   path?: string;
-  duration?: string;
   createdAt?: string;
   updatedAt?: string;
 }

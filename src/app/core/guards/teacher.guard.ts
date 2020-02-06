@@ -30,12 +30,15 @@ export class TeacherGuard implements CanLoad {
       },
       fetchPolicy: 'no-cache'
     }).pipe(
-      tap(({errors}) => {
+      map(({data, errors}) => {
+        if (data) {
+          return data.authTeacher;
+        }
         if (errors) {
           for (const err of errors) {
             switch (err.extensions.statusText) {
               case 'Forbidden':
-                this.toast.error(`${err.message}`, 'Portail Professeur', {
+                this.toast.warning(`${err.message}`, 'Portail Professeur', {
                   positionClass: 'toast-top-full-width',
                   timeOut: 3000
                 });
@@ -48,12 +51,9 @@ export class TeacherGuard implements CanLoad {
                 break;
             }
           }
-          setTimeout(() => {
-            this.router.navigate(['/']);
-          }, 2000);
+          return false;
         }
-      }),
-      map(({data}) => data.authTeacher)
+      })
     );
   }
 }

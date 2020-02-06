@@ -1,25 +1,27 @@
 import gql from 'graphql-tag';
 import { User } from './../../../core/models/user.model';
 
-export const MYPROFIL_GQL = gql`
-  query MyProfile($userId: Int!) {
-    myProfile(userId: $userId) {
+export const PROFILE_GQL = gql`
+  query Profile($userId: Int!) {
+    profile(userId: $userId) {
       username
       email
     }
   }
 `;
 
+export interface ProfileResponse {
+  profile: User;
+}
+
 export const UPDATEPROFIL_GQL = gql`
-  mutation UpdateUser($input: UpdatedUser!) {
-    updateUser(input: $input)
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      id
+    }
   }
 `;
 
-export interface MyProfilResponse {
-  myProfile: User;
-}
-
 export interface UpdateUserResponse {
-  updateUser: boolean;
+  updateUser: User;
 }

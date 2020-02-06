@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MY_REFRESHERCOURSE_GQL, MyRefresherCoursesResponse } from './my-courses-gql';
+import { REFRESHERCOURSE_GQL, RefresherCoursesResponse } from './my-courses-gql';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
 import { Apollo } from 'apollo-angular';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -29,37 +29,25 @@ export class CoursesComponent implements OnInit, OnDestroy {
       this.jwtHelper.decodeToken(Cookies.get('access_token')) != null &&
       !this.jwtHelper.isTokenExpired(Cookies.get('access_token'))
     ) {
-      this.querySub = this.apollo.watchQuery<MyRefresherCoursesResponse>({
-        query: MY_REFRESHERCOURSE_GQL,
+      this.querySub = this.apollo.watchQuery<RefresherCoursesResponse>({
+        query: REFRESHERCOURSE_GQL,
         variables: {
-          userId: this.auth.getUserIDToken()
+          input: {
+            byUserId: this.auth.getUserIDToken()
+          }
         },
         fetchPolicy: 'cache-and-network'
-      }).valueChanges.subscribe(res => {
-        if (res.hasOwnProperty('errors')) {
-          for (const err of res.errors) {
-            switch (err.extensions.statusText) {
-              case 'Unauthorized':
-                this.toast.error(`${err.message} !`, 'Mes Cours', {
-                  positionClass: 'toast-top-full-width',
-                  timeOut: 3000
-                });
-                this.apollo.client.clearStore();
-                setTimeout(() => {
-                  this.router.navigate(['/']);
-                }, 2800);
-                break;
-              case 'Internal Server Error':
-                this.toast.error(`${err.message} !`, 'Mes Cours', {
-                  positionClass: 'toast-top-right',
-                  timeOut: 5000
-                });
-                break;
-            }
-          }
+      }).valueChanges.subscribe(({data, errors}) => {
+        if (data) {
+          this.refresherCourses = data.refresherCourses;
         }
-        if (res.data !== undefined) {
-          this.refresherCourses = res.data.myRefresherCourses;
+        if (errors) {
+          for (const err of errors) {
+            this.toast.error(`${err.message} !`, 'Mes Cours', {
+              positionClass: 'toast-top-right',
+              timeOut: 5000
+            });
+          }
         }
       });
     }

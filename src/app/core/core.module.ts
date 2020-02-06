@@ -9,7 +9,6 @@ import { HomepageComponent } from './layouts/homepage/homepage.component';
 import { BottomComponent } from './layouts/bottom/bottom.component';
 
 import { SharedModule } from './../shared/shared.module';
-import { LoaderComponent } from '../shared/components/loader/loader.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -20,7 +19,7 @@ const routes: Routes = [
     TopComponent, HomepageComponent, BottomComponent
   ],
   imports: [
-    CommonModule, RouterModule.forRoot(routes), SharedModule
+    CommonModule, RouterModule.forRoot(routes), SharedModule,
   ],
   exports: [
     RouterModule, TopComponent, HomepageComponent, BottomComponent

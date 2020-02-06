@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { MYPROFIL_GQL, UPDATEPROFIL_GQL, MyProfilResponse, UpdateUserResponse } from './profil-gql';
+import { PROFILE_GQL, UPDATEPROFIL_GQL, ProfileResponse, UpdateUserResponse } from './profil-gql';
 import { AuthService } from './../../../core/services/auth.service';
 import { User } from 'src/app/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -18,12 +17,10 @@ import { Subscription } from 'rxjs';
 })
 export class ProfilComponent implements OnInit, OnDestroy {
   constructor(
-    private fb: FormBuilder,
-    private apollo: Apollo,
-    private auth: AuthService,
-    private toast: ToastrService,
+    private fb: FormBuilder, private apollo: Apollo,
+    private auth: AuthService, private toast: ToastrService,
     private router: Router
-    ) {}
+  ) {}
   private querySub: Subscription;
   private jwtHelper = new JwtHelperService();
   userForm: FormGroup;
@@ -39,14 +36,19 @@ export class ProfilComponent implements OnInit, OnDestroy {
       this.jwtHelper.decodeToken(Cookies.get('access_token')) != null &&
       !this.jwtHelper.isTokenExpired(Cookies.get('access_token'))
     ) {
-      this.querySub = this.apollo.watchQuery<MyProfilResponse>({
-        query: MYPROFIL_GQL,
+      this.querySub = this.apollo.watchQuery<ProfileResponse>({
+        query: PROFILE_GQL,
         variables: {
           userId: this.auth.getUserIDToken()
         },
-      }).valueChanges.subscribe(res => {
-        if (res.hasOwnProperty('errors')) {
-          for (const err of res.errors) {
+        fetchPolicy: 'cache-and-network'
+      }).valueChanges.subscribe(({data, errors}) => {
+        if (data) {
+          this.user = data.profile;
+          this.userForm.patchValue(this.user);
+        }
+        if (errors) {
+          for (const err of errors) {
             switch (err.extensions.statusText) {
               case 'Unauthorized':
                 this.toast.error(`${err.message} !`, 'Profil', {
@@ -60,9 +62,6 @@ export class ProfilComponent implements OnInit, OnDestroy {
                 break;
             }
           }
-        } else {
-          this.user = res.data.myProfile;
-          this.userForm.patchValue(this.user);
         }
       });
     }
@@ -78,33 +77,36 @@ export class ProfilComponent implements OnInit, OnDestroy {
           password: this.userForm.value.password
         }
       },
-    }).pipe(
-      tap(res => {
-        if (res.data === undefined && res.data === null) {
-          for (const err of res.errors) {
-            switch (err.extensions.statusText) {
-              default:
-                this.userForm.reset();
-                this.userForm.patchValue(this.user);
-                this.toast.error(`${this.auth.getUsernameToken()} profil n'a pu être mis à jour`, 'Profil', {
-                  positionClass: 'toast-top-right',
-                  timeOut: 3000
-                });
-                break;
-            }
+    }).subscribe(({data, errors}) => {
+      if (data) {
+        this.user = data.updateUser;
+        this.userForm.patchValue(this.user);
+        this.toast.success(`${this.auth.getUsernameToken()} profil mis à jour`, 'Profil', {
+          positionClass: 'toast-top-right',
+          timeOut: 3000
+        });
+      }
+      if (errors) {
+        for (const err of errors) {
+          switch (err.extensions.statusText) {
+            case 'Forbidden':
+              this.toast.error(`${err.message}`, 'Profil', {
+                positionClass: 'toast-top-right',
+                timeOut: 3000
+              });
+              break;
+            default:
+              this.toast.error(`${this.auth.getUsernameToken()} profil n'a pu être mis à jour`, 'Profil', {
+                positionClass: 'toast-top-right',
+                timeOut: 3000
+              });
+              break;
           }
-        } else {
-          // change mutation schema gqlgen backend
-          // this.user = res.data.updateUser;
-          // this.userForm.patchValue(this.user);
-          console.log('updated');
-          this.toast.success(`${this.auth.getUsernameToken()} profil mis à jour`, 'Profil', {
-            positionClass: 'toast-top-right',
-            timeOut: 3000
-          });
+          this.userForm.reset();
+          this.userForm.patchValue(this.user);
         }
-      })
-    );
+      }
+    });
   }
 
   ngOnDestroy() {

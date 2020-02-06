@@ -3,7 +3,7 @@
   <p>Retrouvez nos différent cours en format session annuelle et de remise à niveau d'avant épreuves</p>
   <a [routerLink]="['/formations/courses']" class="course__btn">Voir Cours</a>
   <div class="ecrpe__info">
-    <div><p>Retrouvez des cours en {{ subjects$ | async}}</p></div>
-    <div><p>Plus de {{ totalHours$ | async }} heures de séances enregistrées</p></div>
+    <div><p>Retrouvez des cours en {{ subjects }}</p></div>
+    <div><p>Plus de {{ totalHours }} heures de séances enregistrées</p></div>
   </div>
 </div>

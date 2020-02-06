@@ -2,19 +2,6 @@
   grid-row: 2;
 }
 
-.price_new-course {
-  text-align: right;
-}
-
-input.price_new-course::-webkit-outer-spin-button,
-input.price_new-course::-webkit-inner-spin-button {
-  display: none;
-}
-
-input.price_new-course {
-  -moz-appearance: textfield;
-}
-
 .new-course__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -86,9 +73,6 @@ input.price_new-course {
     > button {
       background-color: greenyellow;
     }
-  }
-  .price_new-course {
-    width: inherit;
   }
   .btn__new-course {
     text-align: center;

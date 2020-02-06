@@ -1,47 +1,43 @@
 import gql from 'graphql-tag';
-import { RefresherCourse } from 'src/app/core';
+import { RefresherCourse, Session } from 'src/app/core';
 
 export const COURSEDETAILS_GQL = gql`
-  query GetRefresherCourse($refresherCourseId: Int!) {
-    getRefresherCourse(refresherCourseId: $refresherCourseId) {
-      id
-      year
-      isFinished
-      price
-      createdAt
-      updatedAt
-      isPurchased
-      subject {
+  query RefresherCourse($refresherCourseId: Int!) {
+    refresherCourse(refresherCourseId: $refresherCourseId) {
+      refresherCourse {
         id
-        name
+        subject
+        year
+        isFinished
+        price
+        totalDuration
+        isPurchased
+        teachers {
+          id
+          username
+        }
       }
       sessions {
         id
         title
-        # type
-        # part
-      }
-      teachers {
-        id
-        username
-        # fullname
+        section
+        type
       }
     }
   }
 `;
 
 export interface CourseDetailsResponse {
-  getRefresherCourse: RefresherCourse;
+  refresherCourse: RefresherCourse;
+  sessions: Session[];
 }
 
 export const PURCHASEREFCOURSE_GQL = gql`
-  mutation PurchaseRefresherCourse($input: NewPurchaseRefresherCourse!) {
-    purchaseRefresherCourse(input: $input) {
-      id
-    }
+  mutation PurchaseRefresherCourse($input: PurchaseRefresherCourseInput!) {
+    purchaseRefresherCourse(input: $input)
   }
 `;
 
 export interface PurchaseRefCourseResponse {
-  purchaseRefresherCourse: RefresherCourse;
+  purchaseRefresherCourse: boolean;
 }

@@ -2,8 +2,16 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { TeacherGuard, LoggedInGuard } from './core/guards';
 import { AuthGuard } from './core/guards/auth.guard';
+import { HomepageComponent } from './core/layouts/homepage/homepage.component';
+
+import { HomepageResolver } from './core/resolvers/homepage.resolver';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: HomepageComponent,
+    resolve: { homepage: HomepageResolver }
+  },
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.module').then(mod => mod.AuthModule),

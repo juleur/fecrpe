@@ -1,13 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map, tap } from 'rxjs/operators';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
 import { AuthService } from './../../../core/services/auth.service';
-import { COURSEDETAILS_GQL, CourseDetailsResponse, PURCHASEREFCOURSE_GQL, PurchaseRefCourseResponse } from './course-details-gql';
+import { PURCHASEREFCOURSE_GQL, PurchaseRefCourseResponse } from './course-details-gql';
 import { Apollo } from 'apollo-angular';
 import { ToastrService } from 'ngx-toastr';
-import { MyRefresherCoursesResponse } from '../../users/courses/my-courses-gql';
+import { Session, User } from 'src/app/core';
 
 declare var paypal;
 
@@ -16,7 +15,7 @@ declare var paypal;
   templateUrl: './course-details.component.html',
   styleUrls: ['./course-details.component.scss'],
 })
-export class CourseDetailsComponent implements OnInit, OnDestroy {
+export class CourseDetailsComponent implements OnInit {
   @ViewChild('paypalButton') set paypalButton(element: ElementRef) {
     if (element) {
       paypal
@@ -26,7 +25,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
             return actions.order.create({
               purchase_units: [
                 {
-                  description: 'Simple test',
+                  description: '',
                   amount: {
                     currency_code: 'EUR',
                     value: this.refresherCourse.price,
@@ -49,39 +48,47 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         .render(element.nativeElement);
     }
   }
-  private querySub: Subscription;
-  private refCourseRouteID: number;
   isUserLoggedIn$: Observable<boolean>;
   refresherCourse: RefresherCourse;
+  teachers: string;
+  sessions: Session[];
+  showError = false;
 
-  constructor(
-    private auth: AuthService, private apollo: Apollo,
-    private toast: ToastrService, private route: ActivatedRoute,
-  ) {
+  constructor(private auth: AuthService, private apollo: Apollo, private toast: ToastrService, private activatedRoute: ActivatedRoute) {
     this.isUserLoggedIn$ = this.auth.isLoggedIn$;
-    this.refCourseRouteID = this.route.snapshot.params.id;
+    this.activatedRoute.data.subscribe(res => {
+      if (res.course.data) {
+        this.refresherCourse = res.course.data.refresherCourse.refresherCourse;
+        this.sessions = res.course.data.refresherCourse.sessions;
+        this.refresherCourse.teachers.map(t => {
+          let arr: string[] = [];
+          arr.push(t.username);
+          this.teachers = arr.join(' et ');
+        });
+      }
+      if (res.course.errors) {
+        this.showError = true;
+        for (const err of res.course.errors) {
+          switch (err.extensions.statusText) {
+            case 'Not Found':
+              this.toast.warning(`${err.message}`, 'Cours', {
+                positionClass: 'toast-top-full-width',
+                timeOut: 3000
+              });
+              break;
+            case 'Internal Server Error':
+              this.toast.error(`${err.message}`, 'Cours', {
+                positionClass: 'toast-top-full-width',
+                timeOut: 3000
+              });
+              break;
+          }
+        }
+      }
+    });
   }
 
   ngOnInit() {
-    this.querySub = this.apollo.watchQuery<CourseDetailsResponse>({
-      query: COURSEDETAILS_GQL,
-      variables: {
-        refresherCourseId: this.refCourseRouteID
-      },
-      fetchPolicy: 'cache-and-network'
-    }).valueChanges.subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        for (const err of res.errors) {
-          this.toast.error(`${err.message} !`, 'Remise à niveau', {
-            positionClass: 'toast-top-right',
-            timeOut: 5000
-          });
-        }
-      }
-      if (res.data !== undefined || res.data !== null) {
-        this.refresherCourse = res.data.getRefresherCourse;
-      }
-    });
   }
 
   private addOrder(order: any): void {
@@ -94,25 +101,21 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
           paypalPayerId: order.payer.payer_id,
         }
       }
-    }).subscribe(res => {
-      if (res.hasOwnProperty('errors')) {
-        for (const err of res.errors) {
+    }).subscribe(({data, errors}) => {
+      if (data) {
+        this.toast.success('Votre paiement a bien été effectué, vous pouvez dorénavant accéder aux sessions video', 'Paiement Effectué', {
+          positionClass: 'toast-top-full-width',
+          timeOut: 6000
+        });
+      }
+      if (errors) {
+        for (const err of errors) {
           this.toast.error(`${err.message}`, 'Paiement Refusé', {
             positionClass: 'toast-top-full-width',
             timeOut: 5000
           });
         }
       }
-      if (res.data !== undefined || res.data !== null) {
-        this.toast.success('Votre paiement a bien été effectué, vous pouvez dorénavant accéder aux sessions video', 'Paiement Effectué', {
-          positionClass: 'toast-top-full-width',
-          timeOut: 7000
-        });
-      }
     });
-  }
-
-  ngOnDestroy() {
-    this.querySub.unsubscribe();
   }
 }

@@ -1,7 +1,5 @@
-import {Observable} from '@apollo/client/core';
 import { Component, OnInit } from '@angular/core';
-
-import { of } from 'zen-observable';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'homepage',
@@ -9,15 +7,16 @@ import { of } from 'zen-observable';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomepageComponent implements OnInit {
-  totalHours$: Observable<number>;
-  subjects$: Observable<string[]>;
-  
-  constructor() { }
+  subjects: string[];
+  totalHours: string;
+
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.data.subscribe(res => {
+      this.subjects = res.homepage.data.subjectsEnum;
+      this.totalHours = res.homepage.data.totalHoursCourses;
+    });
+  }
 
   ngOnInit() {
-    this.totalHours$ = Observable.of<number>(500);
-    this.subjects$ = Observable.of<string[]>(
-      ['Maths', 'Français', 'Economie']
-    );
   }
 }

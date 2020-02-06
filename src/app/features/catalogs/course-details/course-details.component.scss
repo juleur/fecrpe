@@ -13,14 +13,6 @@
     font-size: 34px;
     justify-self: center;
   }
-  // 2 row
-  .cdetails__description {
-    grid-column: 1/-1;
-    grid-row: 2;
-    font-size: 20px;
-    justify-self: center;
-    padding: 0 10px 0 10px;
-  }
   // 3 row
   .cdetails__info {
     justify-self: center;
@@ -93,6 +85,16 @@ details {
     margin-top: -15px;
     margin-bottom: -15px;
   }
+  .cdetails__listcourses_group_list {
+    span {
+      padding-right: 30px;
+      font-size: 1.2em;
+    }
+    a {
+      text-decoration: none;
+      color: #5cb85c;
+    }
+  }
 }
 
 summary {
@@ -125,4 +127,8 @@ details[open] summary {
       text-decoration: underline;
     }
   }
+}
+
+.input-icon {
+  
 }

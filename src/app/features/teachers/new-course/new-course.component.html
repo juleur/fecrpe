@@ -53,7 +53,7 @@
         <mat-datepicker touchUi #picker></mat-datepicker>
       </mat-form-field>
 
-      <input class="file__new-course" type="file" accept="video/mp4" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
+      <input #videoFileInput class="file__new-course" type="file" accept="video/mp4" (change)="onFileSelected($event)" [disabled]="!isUploadReady()">
     </div>
     
     <span>Document PDF:</span>
@@ -61,7 +61,7 @@
       <ng-container *ngFor="let doc of docs.controls;let i = index;">
         <ng-container [formGroupName]="i">
           <mat-form-field class="title-pdf__new-course">
-            <input matInput formControlName="title" placeholder="Nom de fichier">
+            <input matInput formControlName="title" placeholder="Nom de fichier (laissez vide si aucun)">
           </mat-form-field>
           <input class="doc-file__new-courses" type="file" (change)="onDocFileSelected($event)" accept="application/pdf,application/msword,.doc,.docx,application/vnd.ms-excel,image/*">
           <button class="btn-remove-doc__new-course" type="button" mat-mini-fab (click)="removeDocs(i)">
@@ -76,12 +76,6 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
-
-    <mat-form-field class="price_new-course">
-      <input matInput placeholder="Amount" type="number" class="price_new-course" formControlName="price" min="1">
-      <span matPrefix>€&nbsp;</span>
-      <span matSuffix>.00</span>
-    </mat-form-field>
 
     <div class="btn__new-course">
       <button class="button__new-course" [disabled]="!rcForm.valid || loading">Postez ce cours</button>

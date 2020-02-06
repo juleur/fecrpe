@@ -7,10 +7,17 @@ import { SessionPlayersComponent } from './session-players/session-players.compo
 
 import { LoggedInGuard } from 'src/app/core/guards/logged-in.guard';
 
+import { CoursesResolver } from 'src/app/core/resolvers/courses.resolver';
+import { CourseDetailsResolver } from 'src/app/core/resolvers/course-details.resolver';
+import { SessionPlayersResolver } from 'src/app/core/resolvers/session-players.resolver';
+
 const routes: Routes = [
-  { path: 'courses', component: CoursesComponent },
-  { path: 'courses/:id', component: CourseDetailsComponent},
-  { path: 'courses/:id/vid/:vid', component: SessionPlayersComponent, canActivate: [LoggedInGuard] }
+  { path: 'courses', component: CoursesComponent, resolve: { courses: CoursesResolver } },
+  { path: 'courses/:id', component: CourseDetailsComponent, resolve: { course: CourseDetailsResolver } },
+  {
+    path: 'courses/:id/vid/:vid', component: SessionPlayersComponent,
+    resolve: { sessionPlayers: SessionPlayersResolver }, canActivate: [LoggedInGuard]
+  }
 ];
 
 @NgModule({
