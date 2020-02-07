@@ -7,10 +7,10 @@
     <h2 class="session-player__doc">Documents</h2>          
     <ng-container *ngFor="let cp of classPapers">
       <div class="pp_pdf">
-        <span class="text-attach">{{cp.title}}</span>
-        <button mat-raised-button class="btn-attach">
+        <span class="text-attach">{{cp.title}} test</span>
+        <a mat-raised-button class="btn-attach" href="{{serverFileURL + cp.path}}">
           <mat-icon>attach_file</mat-icon>
-        </button>
+        </a>
       </div>
     </ng-container>    
   </div>

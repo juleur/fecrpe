@@ -10,4 +10,5 @@ export interface Session {
   recordedOn?: string;
   createdAt?: string;
   updatedAt?: string;
+  refresherCourseId?: number;
 }

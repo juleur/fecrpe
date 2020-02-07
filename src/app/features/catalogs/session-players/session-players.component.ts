@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { timer, Subject } from 'rxjs';
-import { switchMap, takeUntil, repeatWhen } from 'rxjs/operators';
+import { ActivatedRoute, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { timer, Subject, interval } from 'rxjs';
+import { switchMap, takeUntil, repeatWhen, take } from 'rxjs/operators';
 
 import { DashjsPlyrDriver } from '../utils/dashjs-plyr-driver/dashjs-plyr-driver';
 import Plyr from 'plyr';
@@ -30,7 +30,7 @@ export class SessionPlayersComponent implements OnInit {
     fullscreen: {enabled: true, fallback: true, iosNative: false},
   };
   sources: Plyr.Source[] = [];
-  private serverFileURL = 'http://localhost:4039/player';
+  serverFileURL = 'http://localhost:4039/player';
 
   session: Session;
   video: Video;
@@ -39,7 +39,10 @@ export class SessionPlayersComponent implements OnInit {
   private readonly _STOP = new Subject<void>();
   private readonly _START = new Subject<void>();
 
-  constructor(private activatedRoute: ActivatedRoute, private toast: ToastrService, private apollo: Apollo) {
+  constructor(
+    private activatedRoute: ActivatedRoute, private toast: ToastrService,
+    private apollo: Apollo, private router: Router
+  ) {
     this.activatedRoute.data.subscribe(res => {
       if (res.sessionPlayers.data) {
         this.session = res.sessionPlayers.data.sessionCourse.session;
@@ -73,24 +76,26 @@ export class SessionPlayersComponent implements OnInit {
       type: 'video',
       src: this.serverFileURL.concat('', `${this.video.path}`)
     };
-    timer(2 * 1000, 1000).pipe(
+    timer(2 * 1000, 5 * 60 * 1000).pipe(
       switchMap(() => this.apollo.query<PlayerCheckUserResponse>({
         query: PLAYERCHECKUSER,
         fetchPolicy: 'no-cache'
       })),
-      repeatWhen(() => this._START),
       takeUntil(this._STOP),
-    ).subscribe(({errors}) => {
+      repeatWhen(() => this._START)
+      ).subscribe(({errors}) => {
       if (errors) {
         this._STOP.next();
         for (const err of errors) {
-          this.toast.warning(`${err.message}`, '', {
+          this.toast.warning(`${err.message}`, 'Multi-compte', {
             positionClass: 'toast-top-full-width',
             timeOut: 5000
           });
+          this.router.navigate(['/formations/courses', this.activatedRoute.snapshot.paramMap.get('id')]);
         }
       }
     });
+    interval(10 * 1000).pipe(take(1)).subscribe(() => this._STOP.next());
   }
 
   played(event: Plyr.PlyrEvent): void {
