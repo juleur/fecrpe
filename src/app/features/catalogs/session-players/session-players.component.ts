@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { timer, Subject, Subscription } from 'rxjs';
+import { timer, Subject } from 'rxjs';
 import { switchMap, takeUntil, repeatWhen } from 'rxjs/operators';
 
 import { DashjsPlyrDriver } from '../utils/dashjs-plyr-driver/dashjs-plyr-driver';
@@ -73,21 +73,24 @@ export class SessionPlayersComponent implements OnInit {
       type: 'video',
       src: this.serverFileURL.concat('', `${this.video.path}`)
     };
-    timer(2 * 1000, 5 * 60 * 1000).pipe(
+    timer(2 * 1000, 1000).pipe(
       switchMap(() => this.apollo.query<PlayerCheckUserResponse>({
         query: PLAYERCHECKUSER,
         fetchPolicy: 'no-cache'
       })),
       repeatWhen(() => this._START),
       takeUntil(this._STOP),
-    ).subscribe(({data, errors}) => {
-      if (!data.playerCheckUser || errors) {
+    ).subscribe(({errors}) => {
+      if (errors) {
         this._STOP.next();
-        console.log(errors);
-        console.log(data.playerCheckUser);
+        for (const err of errors) {
+          this.toast.warning(`${err.message}`, '', {
+            positionClass: 'toast-top-full-width',
+            timeOut: 5000
+          });
+        }
       }
     });
-    // this._STOP.next();
   }
 
   played(event: Plyr.PlyrEvent): void {
