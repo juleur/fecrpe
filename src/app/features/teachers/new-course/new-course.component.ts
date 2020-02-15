@@ -103,7 +103,6 @@ export class NewCourseComponent implements OnInit, OnDestroy {
 
   onNewCourseSubmit(): void {
     this.loading = true;
-    console.log(this.loading);
     this.apollo.mutate<NewCourseResponse>({
       mutation: NEWCOURSE_GQL,
       variables: {

@@ -1,13 +1,12 @@
 <h2 class="session-player__title">[{{ session?.type | translateEnums | titlecase }}] {{ session?.title | titlecase }}<span *ngIf="session?.sessionNumber"> - Part {{ session?.sessionNumber }}</span></h2>
 <div class="session-player__grid">
-  <!-- <div class="session-player__video" *ngIf="sources?.length > 0" plyr [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources"></div> -->
   <plyr class="session-player__video" [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources" (plyrInit)="player = $event" (plyrPlay)="played($event)" (plyrPause)="paused($event)" (plyrEnded)="ended($event)"></plyr>
   <div class="session-player__description">{{ session?.description }}</div>
   <div class="session-player__classpapers">
     <h2 class="session-player__doc">Documents</h2>          
     <ng-container *ngFor="let cp of classPapers">
       <div class="pp_pdf">
-        <span class="text-attach">{{cp.title}} test</span>
+        <span class="text-attach">{{cp.title}}</span>
         <a mat-raised-button class="btn-attach" href="{{serverFileURL + cp.path}}">
           <mat-icon>attach_file</mat-icon>
         </a>

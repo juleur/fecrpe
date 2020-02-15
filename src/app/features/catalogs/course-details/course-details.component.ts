@@ -2,11 +2,11 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
-import { AuthService } from './../../../core/services/auth.service';
 import { PURCHASEREFCOURSE_GQL, PurchaseRefCourseResponse } from './course-details-gql';
 import { Apollo } from 'apollo-angular';
 import { ToastrService } from 'ngx-toastr';
 import { Session, User } from 'src/app/core';
+import { AuthStatusService } from './../../../core/services/auth-status.service';
 
 declare var paypal;
 
@@ -54,8 +54,8 @@ export class CourseDetailsComponent implements OnInit {
   sessions: Session[];
   showError = false;
 
-  constructor(private auth: AuthService, private apollo: Apollo, private toast: ToastrService, private activatedRoute: ActivatedRoute) {
-    this.isUserLoggedIn$ = this.auth.isLoggedIn$;
+  constructor(private authStatus: AuthStatusService, private apollo: Apollo, private toast: ToastrService, private activatedRoute: ActivatedRoute) {
+    this.isUserLoggedIn$ = this.authStatus.isLoggedIn$;
     this.activatedRoute.data.subscribe(res => {
       if (res.course.data) {
         this.refresherCourse = res.course.data.refresherCourse.refresherCourse;

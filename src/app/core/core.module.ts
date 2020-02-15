@@ -1,7 +1,6 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-
 import { throwIfAlreadyLoaded } from './guards/module-import.guard';
 
 import { TopComponent } from './layouts/top/top.component';
@@ -19,7 +18,7 @@ const routes: Routes = [
     TopComponent, HomepageComponent, BottomComponent
   ],
   imports: [
-    CommonModule, RouterModule.forRoot(routes), SharedModule,
+    CommonModule, RouterModule.forRoot(routes), SharedModule
   ],
   exports: [
     RouterModule, TopComponent, HomepageComponent, BottomComponent

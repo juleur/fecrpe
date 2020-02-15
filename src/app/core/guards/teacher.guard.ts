@@ -5,7 +5,7 @@ import { tap, map } from 'rxjs/operators';
 import * as Cookies from 'js-cookie';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Apollo } from 'apollo-angular';
-import { AuthService } from '../services';
+import { AuthStatusService } from './../services/auth-status.service';
 import { IS_TEACHER_GQL, IsTeacherResponse } from './../graphql/queries/teacher-access-gql';
 import { ToastrService } from 'ngx-toastr';
 
@@ -15,7 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 export class TeacherGuard implements CanLoad {
   private jwtHelper = new JwtHelperService();
   constructor(
-    private apollo: Apollo, private auth: AuthService,
+    private apollo: Apollo, private authStatus: AuthStatusService,
     private router: Router, private toast: ToastrService
   ) {}
   status: boolean;
@@ -26,7 +26,7 @@ export class TeacherGuard implements CanLoad {
     return this.apollo.query<IsTeacherResponse>({
       query: IS_TEACHER_GQL,
       variables: {
-        userId: this.auth.getUserIDToken()
+        userId: this.authStatus.getUserIDToken()
       },
       fetchPolicy: 'no-cache'
     }).pipe(

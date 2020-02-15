@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { LoaderComponent } from './components/loader/loader.component';
 
 import { TranslateEnumsPipe } from './pipes/translate-enums.pipe';

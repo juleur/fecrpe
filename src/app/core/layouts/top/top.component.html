@@ -5,6 +5,9 @@
     </a>
   </div>
   <div class="right_menu">
+        <span *ngIf="(isUserLoggedIn$ | async) && (isTeacher$ | async)">
+          <a [routerLink]="['/panel/teachers']">Panel Professeur</a>
+        </span>
     <span *ngIf="isUserLoggedIn$ | async">
       <a [routerLink]="['/u/mes-cours']">Mes Cours</a>
     </span>

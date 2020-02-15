@@ -6,7 +6,7 @@ import { Apollo } from 'apollo-angular';
 import * as Cookies from 'js-cookie';
 import { LOGIN_GQL, TokenResponse } from './login-gql';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/core';
+import { AuthStatusService } from 'src/app/core/services/auth-status.service';
 
 @Component({
   selector: 'login-form',
@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder, private apollo: Apollo,
     private router: Router, private toast: ToastrService,
-    private auth: AuthService
+    private authStatus: AuthStatusService
   ) {}
   loading: boolean;
   loginForm: FormGroup;
@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
       if (data) {
         Cookies.set('access_token', data.login.jwt, { secure: false });
         Cookies.set('refresh_token', data.login.refreshToken, { secure: false, expires: 14 });
-        this.auth.changeAuthStatus(true);
+        this.authStatus.changeAuthStatus(true);
         this.router.navigate(['/']);
       }
       if (errors) {
