@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import * as Cookies from 'js-cookie';
-import { ApolloService } from './apollo.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +10,7 @@ export class AuthStatusService {
   private jwtHelper = new JwtHelperService();
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   private teacherInSubject = new BehaviorSubject<boolean>(false);
+
   isLoggedIn$ = this.loggedInSubject.asObservable();
   isTeacher$ = this.teacherInSubject.asObservable();
 
@@ -25,16 +25,16 @@ export class AuthStatusService {
 
   getUserIDToken(): number {
     const decodedToken = this.jwtHelper.decodeToken(Cookies.get('access_token'));
-    return decodedToken['userId'];
+    return decodedToken[`userId`];
   }
 
   getUsernameToken(): string {
     const decodedToken = this.jwtHelper.decodeToken(Cookies.get('access_token'));
-    return decodedToken['username'];
+    return decodedToken[`username`];
   }
 
   getTeacherToken(): boolean {
     const decodedToken = this.jwtHelper.decodeToken(Cookies.get('access_token'));
-    return decodedToken['teacher'] ? true : false;
+    return decodedToken[`teacher`] ? true : false;
   }
 }

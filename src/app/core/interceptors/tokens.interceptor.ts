@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpClient, HttpResponse, HttpEvent, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import * as Cookies from 'js-cookie';
-import { take, tap, catchError } from 'rxjs/operators';
-import { Token } from '../models';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { map, catchError, tap, take, switchMap, finalize, filter } from 'rxjs/operators';
 import { AuthStatusService } from '../services/auth-status.service';
-import { throwError, EMPTY } from 'rxjs';
-import { Router } from '@angular/router';
-
+import { EMPTY, Observable, BehaviorSubject } from 'rxjs';
+import { Token } from '../models';
 
 const EXCLUDE_PATH: string[] = [
   '/auth/login',
@@ -16,52 +13,89 @@ const EXCLUDE_PATH: string[] = [
 
 @Injectable()
 export class TokensInterceptor implements HttpInterceptor {
-  private jwtHelper = new JwtHelperService();
+  isRefreshingToken = false;
+  tokenStatusSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
-  constructor(
-    private http: HttpClient, private authStatus: AuthStatusService,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private authStatus: AuthStatusService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    console.log('TokenInterceptor');
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     for (const path of EXCLUDE_PATH) {
-      if (req.url.includes(path)) {
+      if (window.location.pathname.includes(path)) {
         return next.handle(req);
       }
     }
-    if (this.jwtHelper.decodeToken(Cookies.get('access_token')) !== null) {
-      if (this.jwtHelper.isTokenExpired(Cookies.get('access_token'))) {
-        const httpOptions = {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('access_token') || 'unknown'}`,
-            'Refresh-Token': Cookies.get('refresh_token') || 'unknown'
-          })
-        };
-        this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions ).pipe(
-          take(1),
+    return next.handle(this.updateReq(req)).pipe(
+      map(event => {
+        if (event instanceof HttpResponse) {
+          if (event.body.hasOwnProperty('errors')) {
+            for (const err of event.body.errors) {
+              switch (err.extensions.statusText) {
+                case 'Token Expired':
+                  throw(new HttpErrorResponse({headers: event.headers, status: 498, statusText: 'Token Expired', url: event.url}));
+                case 'Unauthorized':
+                  throw(new HttpErrorResponse({headers: event.headers, status: 401, statusText: 'Unauthorized', url: event.url}));
+              }
+            }
+          }
+        }
+        return event;
+      }),
+      catchError(err => {
+        if (err instanceof HttpErrorResponse) {
+          switch (err.statusText) {
+            case 'Token Expired':
+              return this.handle498Error(req, next);
+            case 'Unauthorized':
+              this.authStatus.changeAuthStatus(false);
+              Cookies.remove('access_token');
+              Cookies.remove('refresh_token');
+              window.location.pathname = '/';
+          }
+        }
+        return EMPTY;
+      }),
+    );
+  }
+
+  private handle498Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (!this.isRefreshingToken) {
+      this.isRefreshingToken = true;
+      this.tokenStatusSubject.next(false);
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Cookies.get('access_token')}`,
+          'Refresh-Token': Cookies.get('refresh_token')
+        })
+      };
+      return this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions)
+        .pipe(
           tap(data => {
-            Cookies.set('access_token', data.jwt, {secure: false});
-            Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14});
+            Cookies.set('access_token', data.jwt, { secure: false });
+            Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14 });
             this.authStatus.changeAuthStatus(true);
+          }),
+          switchMap(() => {
+            this.tokenStatusSubject.next(true);
+            return next.handle(this.updateReq(request));
           }),
           catchError(err => {
             if (err instanceof HttpErrorResponse) {
               this.authStatus.changeAuthStatus(false);
               Cookies.remove('access_token');
               Cookies.remove('refresh_token');
-              this.router.navigate(['/auth/login']);
             }
             return EMPTY;
-          })
+          }),
+          finalize(() => this.isRefreshingToken = false)
         );
-      } else {
-        this.authStatus.changeAuthStatus(true);
-      }
-      return next.handle(this.updateReq(req));
+    } else {
+      return this.tokenStatusSubject.pipe(
+        filter(status => status !== true),
+        take(1),
+        switchMap(() => next.handle(this.updateReq(request)))
+      );
     }
-    return next.handle(req);
   }
 
   private updateReq(oldReq: HttpRequest<any>): HttpRequest<any> {
@@ -72,3 +106,75 @@ export class TokensInterceptor implements HttpInterceptor {
     });
   }
 }
+
+      // tap(event => {
+      //   if (event instanceof HttpResponse) {
+      //     if (event.body.hasOwnProperty('errors')) {
+      //       for (const err of event.body.errors) {
+      //         switch (err.extensions.statusText) {
+      //           case 'Token Expired':
+      //             console.log('TOKEN EXPIRED');
+      //             const httpOptions = {
+      //               headers: new HttpHeaders({
+      //                 'Content-Type': 'application/json',
+      //                 Authorization: `Bearer ${Cookies.get('access_token')}`,
+      //                 'Refresh-Token': Cookies.get('refresh_token')
+      //               })
+      //             };
+      //             this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions)
+      //               .pipe(
+      //                 tap(data => {
+      //                   Cookies.set('access_token', data.jwt, { secure: false });
+      //                   Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14 });
+      //                   this.authStatus.changeAuthStatus(true);
+      //                 }),
+      //                 take(1),
+      //               ).subscribe();
+      //             break;
+      //           case 'Unauthorized':
+      //             this.authStatus.changeAuthStatus(false);
+      //             Cookies.remove('access_token');
+      //             Cookies.remove('refresh_token');
+      //             break;
+      //         }
+      //       }
+      //     }
+      //   }
+      //   console.log('before new request');
+      //   return next.handle(this.updateReq(req));
+      // }),
+      // map((event: HttpEvent<any>) => {
+      //   if (event instanceof HttpResponse) {
+      //     if (event.body.hasOwnProperty('errors')) {
+      //       for (const err of event.body.errors) {
+      //         switch (err.extensions.statusText) {
+      //           case 'Token Expired':
+      //             console.log('token expired');
+      //             const httpOptions = {
+      //               headers: new HttpHeaders({
+      //                 'Content-Type': 'application/json',
+      //                 Authorization: `Bearer ${Cookies.get('access_token')}`,
+      //                 'Refresh-Token': Cookies.get('refresh_token')
+      //               })
+      //             };
+      //             this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions)
+      //               .pipe(
+      //                 tap(data => {
+      //                   Cookies.set('access_token', data.jwt, { secure: false });
+      //                   Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14 });
+      //                   this.authStatus.changeAuthStatus(true);
+      //                 }),
+      //                 take(1),
+      //               ).subscribe();
+      //             break;
+      //           case 'Unauthorized':
+      //             this.authStatus.changeAuthStatus(false);
+      //             Cookies.remove('access_token');
+      //             Cookies.remove('refresh_token');
+      //             break;
+      //         }
+      //       }
+      //     }
+      //   }
+      //   return event;
+      // }),
