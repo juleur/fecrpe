@@ -29,12 +29,7 @@ export class TokensInterceptor implements HttpInterceptor {
         if (event instanceof HttpResponse) {
           if (event.body.hasOwnProperty('errors')) {
             for (const err of event.body.errors) {
-              switch (err.extensions.statusText) {
-                case 'Token Expired':
-                  throw(new HttpErrorResponse({headers: event.headers, status: 498, statusText: 'Token Expired', url: event.url}));
-                case 'Unauthorized':
-                  throw(new HttpErrorResponse({headers: event.headers, status: 401, statusText: 'Unauthorized', url: event.url}));
-              }
+              throw (new HttpErrorResponse({ headers: event.headers, status: err.extensions.statusCode, statusText: err.extensions.statusText, url: event.url }));
             }
           }
         }
@@ -44,7 +39,7 @@ export class TokensInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
           switch (err.statusText) {
             case 'Token Expired':
-              return this.handle498Error(req, next);
+              return this.handleRefreshTokens(req, next);
             case 'Unauthorized':
               this.authStatus.changeAuthStatus(false);
               Cookies.remove('access_token');
@@ -57,7 +52,7 @@ export class TokensInterceptor implements HttpInterceptor {
     );
   }
 
-  private handle498Error(request: HttpRequest<any>, next: HttpHandler) {
+  private handleRefreshTokens(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshingToken) {
       this.isRefreshingToken = true;
       this.tokenStatusSubject.next(false);
@@ -84,6 +79,7 @@ export class TokensInterceptor implements HttpInterceptor {
               this.authStatus.changeAuthStatus(false);
               Cookies.remove('access_token');
               Cookies.remove('refresh_token');
+              window.location.pathname = '/';
             }
             return EMPTY;
           }),
@@ -106,75 +102,3 @@ export class TokensInterceptor implements HttpInterceptor {
     });
   }
 }
-
-      // tap(event => {
-      //   if (event instanceof HttpResponse) {
-      //     if (event.body.hasOwnProperty('errors')) {
-      //       for (const err of event.body.errors) {
-      //         switch (err.extensions.statusText) {
-      //           case 'Token Expired':
-      //             console.log('TOKEN EXPIRED');
-      //             const httpOptions = {
-      //               headers: new HttpHeaders({
-      //                 'Content-Type': 'application/json',
-      //                 Authorization: `Bearer ${Cookies.get('access_token')}`,
-      //                 'Refresh-Token': Cookies.get('refresh_token')
-      //               })
-      //             };
-      //             this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions)
-      //               .pipe(
-      //                 tap(data => {
-      //                   Cookies.set('access_token', data.jwt, { secure: false });
-      //                   Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14 });
-      //                   this.authStatus.changeAuthStatus(true);
-      //                 }),
-      //                 take(1),
-      //               ).subscribe();
-      //             break;
-      //           case 'Unauthorized':
-      //             this.authStatus.changeAuthStatus(false);
-      //             Cookies.remove('access_token');
-      //             Cookies.remove('refresh_token');
-      //             break;
-      //         }
-      //       }
-      //     }
-      //   }
-      //   console.log('before new request');
-      //   return next.handle(this.updateReq(req));
-      // }),
-      // map((event: HttpEvent<any>) => {
-      //   if (event instanceof HttpResponse) {
-      //     if (event.body.hasOwnProperty('errors')) {
-      //       for (const err of event.body.errors) {
-      //         switch (err.extensions.statusText) {
-      //           case 'Token Expired':
-      //             console.log('token expired');
-      //             const httpOptions = {
-      //               headers: new HttpHeaders({
-      //                 'Content-Type': 'application/json',
-      //                 Authorization: `Bearer ${Cookies.get('access_token')}`,
-      //                 'Refresh-Token': Cookies.get('refresh_token')
-      //               })
-      //             };
-      //             this.http.get<Token>('http://localhost:3054/api/ecrpe/refreshtoken', httpOptions)
-      //               .pipe(
-      //                 tap(data => {
-      //                   Cookies.set('access_token', data.jwt, { secure: false });
-      //                   Cookies.set('refresh_token', data.refreshToken, { secure: false, expires: 14 });
-      //                   this.authStatus.changeAuthStatus(true);
-      //                 }),
-      //                 take(1),
-      //               ).subscribe();
-      //             break;
-      //           case 'Unauthorized':
-      //             this.authStatus.changeAuthStatus(false);
-      //             Cookies.remove('access_token');
-      //             Cookies.remove('refresh_token');
-      //             break;
-      //         }
-      //       }
-      //     }
-      //   }
-      //   return event;
-      // }),
