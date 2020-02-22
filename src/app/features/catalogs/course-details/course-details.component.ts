@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RefresherCourse } from './../../../core/models/refresher-course.model';
 import { PURCHASEREFCOURSE_GQL, PurchaseRefCourseResponse } from './course-details-gql';
 import { Apollo } from 'apollo-angular';
@@ -54,7 +54,10 @@ export class CourseDetailsComponent implements OnInit {
   sessions: Session[];
   showError = false;
 
-  constructor(private authStatus: AuthStatusService, private apollo: Apollo, private toast: ToastrService, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private authStatus: AuthStatusService, private apollo: Apollo, private toast: ToastrService, 
+    private activatedRoute: ActivatedRoute, private router: Router
+  ) {
     this.isUserLoggedIn$ = this.authStatus.isLoggedIn$;
     this.activatedRoute.data.subscribe(res => {
       if (res.course.data) {
@@ -107,6 +110,7 @@ export class CourseDetailsComponent implements OnInit {
           positionClass: 'toast-top-full-width',
           timeOut: 6000
         });
+        this.refresherCourse.isPurchased = true;
       }
       if (errors) {
         for (const err of errors) {

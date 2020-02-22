@@ -4,7 +4,7 @@
     <img class="card__img" src="https://bahama-sun.com/wp-content/uploads/2018/05/Fond-bleu.jpg">
     <div class="card__info">
       <span class="card__category"> Année: {{refresherCourse.year}}</span>
-      <h3 class="card__title">Remise à niveau Mathématiques</h3>
+      <h3 class="card__title">Remise à niveau {{refresherCourse.subject | translateEnums | titlecase}}</h3>
       <span class="card__by">
         Par
         <a [routerLink]="['/']" class="card__author" title="author">
