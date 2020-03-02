@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { Token } from '../../models';
 
 export const REFRESHTOKEN_GQL = gql`
-    mutation RefreshToken {
-      refreshToken {
+    mutation RefreshToken($refreshToken: String!) {
+      refreshToken(refreshToken: $refreshToken) {
         jwt
         refreshToken
       }
@@ -11,5 +11,5 @@ export const REFRESHTOKEN_GQL = gql`
 `;
 
 export interface RefreshTokenResponse {
-  refreshToken: Token;
+  token: Token;
 }

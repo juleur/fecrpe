@@ -29,7 +29,8 @@ import { TokensInterceptor } from './core/interceptors/tokens.interceptor';
       useFactory: (httpLink: HttpLink) => {
         return {
           cache: new InMemoryCache(),
-          link: httpLink.create({uri: 'http://localhost:6677/query'}),
+          // link: httpLink.create({ uri: 'http://79.137.126.0:6677/query'}),
+          link: httpLink.create({ uri: 'http://localhost:6677/query'}),
           defaultOptions: {
             query: {
               errorPolicy: 'all',
