@@ -16,37 +16,37 @@ import { ApolloService } from './core/services/apollo.service';
 import { TokensInterceptor } from './core/interceptors/tokens.interceptor';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule, BrowserAnimationsModule, AppRoutingModule, HttpClientModule,
-    ApolloModule, HttpLinkModule, CoreModule, ToastrModule.forRoot()
-  ],
-  providers: [
-    { provide: APP_INITIALIZER, useFactory: (ApolloService) => () => null, deps: [ApolloService], multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: TokensInterceptor, multi: true },
-    {
-      provide: APOLLO_OPTIONS,
-      useFactory: (httpLink: HttpLink) => {
-        return {
-          cache: new InMemoryCache(),
-          // link: httpLink.create({ uri: 'http://79.137.126.0:6677/query'}),
-          link: httpLink.create({ uri: 'http://localhost:6677/query'}),
-          defaultOptions: {
-            query: {
-              errorPolicy: 'all',
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule, BrowserAnimationsModule, AppRoutingModule, HttpClientModule,
+        ApolloModule, HttpLinkModule, CoreModule, ToastrModule.forRoot()
+    ],
+    providers: [
+        { provide: APP_INITIALIZER, useFactory: (ApolloService) => () => null, deps: [ApolloService], multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: TokensInterceptor, multi: true },
+        {
+            provide: APOLLO_OPTIONS,
+            useFactory: (httpLink: HttpLink) => {
+                return {
+                    cache: new InMemoryCache(),
+                    // link: httpLink.create({ uri: 'http://79.137.126.0:6677/query'}),
+                    link: httpLink.create({ uri: 'http://localhost:6677/query' }),
+                    defaultOptions: {
+                        query: {
+                            errorPolicy: 'all',
+                        },
+                        watchQuery: {
+                            errorPolicy: 'all',
+                        },
+                        mutate: {
+                            errorPolicy: 'all'
+                        }
+                    }
+                };
             },
-            watchQuery: {
-              errorPolicy: 'all',
-            },
-            mutate: {
-              errorPolicy: 'all'
-            }
-          }
-        };
-      },
-      deps: [HttpLink]
-    },
-  ],
-  bootstrap: [AppComponent]
+            deps: [HttpLink]
+        },
+    ],
+    bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

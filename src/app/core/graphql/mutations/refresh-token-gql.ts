@@ -11,5 +11,5 @@ export const REFRESHTOKEN_GQL = gql`
 `;
 
 export interface RefreshTokenResponse {
-  token: Token;
+    refreshToken: Token;
 }
