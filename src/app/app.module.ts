@@ -14,6 +14,7 @@ import { CoreModule } from './core/core.module';
 
 import { ApolloService } from './core/services/apollo.service';
 import { TokensInterceptor } from './core/interceptors/tokens.interceptor';
+import { CorsInterceptor } from './core/interceptors/cors.interceptor';
 
 @NgModule({
     declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { TokensInterceptor } from './core/interceptors/tokens.interceptor';
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: (ApolloService) => () => null, deps: [ApolloService], multi: true },
+        // { provide: HTTP_INTERCEPTORS, useClass: CorsInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: TokensInterceptor, multi: true },
         {
             provide: APOLLO_OPTIONS,

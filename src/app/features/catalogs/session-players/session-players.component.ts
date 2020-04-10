@@ -43,38 +43,39 @@ export class SessionPlayersComponent implements OnInit {
         private activatedRoute: ActivatedRoute, private toast: ToastrService,
         private apollo: Apollo, private router: Router
     ) {
-        this.activatedRoute.data.subscribe(res => {
-            if (res.sessionPlayers.data) {
-                this.session = res.sessionPlayers.data.sessionCourse.session;
-                this.video = res.sessionPlayers.data.sessionCourse.video;
-                this.classPapers = res.sessionPlayers.data.sessionCourse.classPapers;
-                this.teacher = res.sessionPlayers.data.sessionCourse.teacher;
-            }
-            if (res.sessionPlayers.errors) {
-                for (const err of res.course.errors) {
-                    switch (err.extensions.statusText) {
-                        case 'Forbidden':
-                            this.toast.warning(`${err.message}`, 'Session vidéo', {
-                                positionClass: 'toast-top-full-width',
-                                timeOut: 3000
-                            });
-                            break;
-                        case 'Internal Server Error':
-                            this.toast.error(`${err.message}`, 'Session vidéo', {
-                                positionClass: 'toast-top-full-width',
-                                timeOut: 3000
-                            });
-                            break;
-                    }
-                }
-            }
-        });
+        // this.activatedRoute.data.subscribe(res => {
+        //     if (res.sessionPlayers.data) {
+        //         this.session = res.sessionPlayers.data.sessionCourse.session;
+        //         this.video = res.sessionPlayers.data.sessionCourse.video;
+        //         this.classPapers = res.sessionPlayers.data.sessionCourse.classPapers;
+        //         this.teacher = res.sessionPlayers.data.sessionCourse.teacher;
+        //     }
+        //     if (res.sessionPlayers.errors) {
+        //         for (const err of res.course.errors) {
+        //             switch (err.extensions.statusText) {
+        //                 case 'Forbidden':
+        //                     this.toast.warning(`${err.message}`, 'Session vidéo', {
+        //                         positionClass: 'toast-top-full-width',
+        //                         timeOut: 3000
+        //                     });
+        //                     break;
+        //                 case 'Internal Server Error':
+        //                     this.toast.error(`${err.message}`, 'Session vidéo', {
+        //                         positionClass: 'toast-top-full-width',
+        //                         timeOut: 3000
+        //                     });
+        //                     break;
+        //             }
+        //         }
+        //     }
+        // });
     }
 
     ngOnInit() {
         this.sources[0] = {
             type: 'video',
-            src: this.serverFileURL.concat('', `${this.video.path}`)
+            src: 'https://bitmovin-a.akamaihd.net/content/art-of-motion_drm/mpds/11331.mpd'
+            // src: this.serverFileURL.concat('', `${this.video.path}`)
         };
         timer(2 * 1000, 5 * 60 * 1000).pipe(
             switchMap(() => this.apollo.query<PlayerCheckUserResponse>({

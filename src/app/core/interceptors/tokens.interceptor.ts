@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpResponse, HttpEvent, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpResponse, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { EMPTY, Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError, tap, take, switchMap, finalize, filter } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import * as Cookies from 'js-cookie';
 import { AuthStatusService } from '../services/auth-status.service';
 import { REFRESHTOKEN_GQL, RefreshTokenResponse } from './../graphql/mutations/refresh-token-gql';
-import { Router, ActivatedRoute } from '@angular/router';
 
 const EXCLUDE_PATH: string[] = [
     '/auth/login',
@@ -22,7 +21,6 @@ export class TokensInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         for (const path of EXCLUDE_PATH) {
-            console.log(path);
             if (window.location.pathname.includes(path)) {
                 return next.handle(req);
             }

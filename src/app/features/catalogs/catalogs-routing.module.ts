@@ -12,16 +12,16 @@ import { CourseDetailsResolver } from 'src/app/core/resolvers/course-details.res
 import { SessionPlayersResolver } from 'src/app/core/resolvers/session-players.resolver';
 
 const routes: Routes = [
-  { path: 'courses', component: CoursesComponent, resolve: { courses: CoursesResolver } },
-  { path: 'courses/:id', component: CourseDetailsComponent, resolve: { course: CourseDetailsResolver } },
-  {
-    path: 'courses/:id/vid/:vid', component: SessionPlayersComponent,
-    resolve: { sessionPlayers: SessionPlayersResolver }, canActivate: [LoggedInGuard]
-  }
+    { path: 'courses', component: CoursesComponent, resolve: { courses: CoursesResolver } },
+    { path: 'courses/:id', component: CourseDetailsComponent, resolve: { course: CourseDetailsResolver } },
+    {
+        path: 'courses/:id/vid/:vid', component: SessionPlayersComponent,
+        // resolve: { sessionPlayers: SessionPlayersResolver }, canActivate: [LoggedInGuard]
+    }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
 export class CatalogsRoutingModule { }

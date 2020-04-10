@@ -1,6 +1,14 @@
 {
-  "/query": {
-    "target": "http://localhost:6677",
-    "logLevel": "debug"
-  }
+    "/query": {
+        "target": "http://localhost:6677",
+        "logLevel": "debug"
+    },
+    "/player/*": {
+        "target": "http://localhost:8080/",
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/player": ""
+        }
+    }
 }
