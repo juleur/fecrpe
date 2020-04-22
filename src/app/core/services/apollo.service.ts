@@ -13,7 +13,6 @@ export class ApolloService {
     private jwtHelper = new JwtHelperService();
 
     constructor(private apollo: Apollo, private authStatus: AuthStatusService) {
-        console.log('ApolloService');
         if (this.jwtHelper.decodeToken(Cookies.get('access_token')) !== null) {
             if (this.jwtHelper.isTokenExpired(Cookies.get('access_token'))) {
                 this.apollo.query<RefreshTokenResponse>({

@@ -33,10 +33,10 @@ export const SESSION_GQL = gql`
 `;
 
 export interface SessionResponse {
-  session: Session;
-  video: Video;
-  classPapers: ClassPaper[];
-  teacher: User;
+    session: Session;
+    video: Video;
+    classPapers: ClassPaper[];
+    teacher: User;
 }
 
 export const PLAYERCHECKUSER = gql`
@@ -46,5 +46,5 @@ export const PLAYERCHECKUSER = gql`
 `;
 
 export interface PlayerCheckUserResponse {
-  playerCheckUser: boolean;
+    playerCheckUser: boolean;
 }

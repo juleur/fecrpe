@@ -1,16 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { timer, Subject, interval } from 'rxjs';
-import { switchMap, takeUntil, repeatWhen, take } from 'rxjs/operators';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { timer, interval, Subject } from 'rxjs';
+import { switchMap, take, takeUntil, repeatWhen } from 'rxjs/operators';
+import { Apollo } from 'apollo-angular';
+import { ToastrService } from 'ngx-toastr';
+import videojs from 'video.js';
 
-import { DashjsPlyrDriver } from '../utils/dashjs-plyr-driver/dashjs-plyr-driver';
-import Plyr from 'plyr';
-import { PlyrComponent } from 'ngx-plyr';
 import { Session } from './../../../core/models/session.model';
 import { Video, User } from 'src/app/core';
 import { ClassPaper } from 'src/app/core/models/class-paper.model';
-import { ToastrService } from 'ngx-toastr';
-import { Apollo } from 'apollo-angular';
 import { PLAYERCHECKUSER, PlayerCheckUserResponse } from './session-gql';
 
 @Component({
@@ -18,24 +16,12 @@ import { PLAYERCHECKUSER, PlayerCheckUserResponse } from './session-gql';
     templateUrl: './session-players.component.html',
     styleUrls: ['./session-players.component.scss']
 })
-export class SessionPlayersComponent implements OnInit {
-    @ViewChild(PlyrComponent) plyr: PlyrComponent;
-    dashjsDriver = new DashjsPlyrDriver(true);
-    player: Plyr;
-    options: Plyr.Options = {
-        clickToPlay: true,
-        hideControls: true,
-        settings: ['speed'],
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
-        fullscreen: { enabled: true, fallback: true, allowAudio: true },
-    };
-    sources: Plyr.Source[] = [];
-    serverFileURL = 'http://localhost:4039/player';
-
+export class SessionPlayersComponent implements OnInit, AfterViewInit, OnDestroy {
     session: Session;
     video: Video;
     classPapers: ClassPaper[];
     teacher: User;
+    vjs: videojs.Player;
     private readonly _STOP = new Subject<void>();
     private readonly _START = new Subject<void>();
 
@@ -72,18 +58,13 @@ export class SessionPlayersComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.sources[0] = {
-            type: 'video',
-            src: 'https://bitmovin-a.akamaihd.net/content/art-of-motion_drm/mpds/11331.mpd'
-            // src: this.serverFileURL.concat('', `${this.video.path}`)
-        };
-        timer(2 * 1000, 5 * 60 * 1000).pipe(
+        interval(3000).pipe(
             switchMap(() => this.apollo.query<PlayerCheckUserResponse>({
                 query: PLAYERCHECKUSER,
                 fetchPolicy: 'no-cache'
             })),
             takeUntil(this._STOP),
-            repeatWhen(() => this._START)
+            repeatWhen(() => this._START),
         ).subscribe(({ errors }) => {
             if (errors) {
                 this._STOP.next();
@@ -96,18 +77,31 @@ export class SessionPlayersComponent implements OnInit {
                 }
             }
         });
-        interval(10 * 1000).pipe(take(1)).subscribe(() => this._STOP.next());
+        interval(1000).pipe(take(1)).subscribe(_ => {
+            this._STOP.next()
+        });
     }
 
-    played(event: Plyr.PlyrEvent): void {
-        this._START.next();
+    ngAfterViewInit() {
+        const options = {
+            sources: [{
+                src: 'http://localhost:8080/player/mathetimatics/2020/rc/session-34/video.714930560.mpd',
+                type: 'application/dash+xml',
+            }],
+        };
+        this.vjs = videojs('my-player', options);
+
+        this.vjs.on('play', () => {
+            this._START.next();
+        });
+        this.vjs.on('pause', () => {
+            this._STOP.next()
+        });
     }
 
-    paused(event: Plyr.PlyrEvent): void {
-        this._STOP.next();
-    }
-
-    ended(event: Plyr.PlyrEvent): void {
-        this._STOP.next();
+    ngOnDestroy() {
+        if (this.vjs) {
+            this.vjs.dispose();
+        }
     }
 }

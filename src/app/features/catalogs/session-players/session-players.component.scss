@@ -11,6 +11,9 @@
   row-gap: 50px;
   .session-player__video {
     grid-row: 1;
+    video {
+        width: 100%;
+    }
   }
   .session-player__description {
     grid-row: 2;

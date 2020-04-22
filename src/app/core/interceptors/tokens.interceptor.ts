@@ -17,7 +17,7 @@ export class TokensInterceptor implements HttpInterceptor {
     isRefreshingToken = false;
     tokenStatusSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
-    constructor(private apollo: Apollo, private authStatus: AuthStatusService) { console.log('Tokens Interceptor'); }
+    constructor(private apollo: Apollo, private authStatus: AuthStatusService) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         for (const path of EXCLUDE_PATH) {

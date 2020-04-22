@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PlyrModule } from 'ngx-plyr';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CatalogsRoutingModule } from './catalogs-routing.module';
 
@@ -15,13 +14,13 @@ import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
-  declarations: [
-    CoursesComponent, CourseDetailsComponent,
-    SessionPlayersComponent, CourseCardComponent,
-  ],
-  imports: [
-    CommonModule, CatalogsRoutingModule, RouterModule, PlyrModule,
-    MatButtonModule, MatIconModule, SharedModule
-  ],
+    declarations: [
+        CoursesComponent, CourseDetailsComponent,
+        SessionPlayersComponent, CourseCardComponent,
+    ],
+    imports: [
+        CommonModule, CatalogsRoutingModule, RouterModule,
+        MatButtonModule, MatIconModule, SharedModule
+    ],
 })
 export class CatalogsModule { }

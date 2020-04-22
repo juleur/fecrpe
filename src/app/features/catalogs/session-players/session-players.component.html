@@ -1,16 +1,25 @@
-<h2 class="session-player__title">[{{ session?.type | translateEnums | titlecase }}] {{ session?.title | titlecase }}<span *ngIf="session?.sessionNumber"> - Part {{ session?.sessionNumber }}</span></h2>
+<h2 class="session-player__title">[{{ session?.type | translateEnums | titlecase }}]
+    {{ session?.title | titlecase }}<span *ngIf="session?.sessionNumber"> - Part {{ session?.sessionNumber }}</span>
+</h2>
 <div class="session-player__grid">
-  <plyr class="session-player__video" [plyrPlaysInline]="true" [plyrCrossOrigin]="true" [plyrDriver]="dashjsDriver" [plyrOptions]="options" [plyrSources]="sources" (plyrInit)="player = $event" (plyrPlay)="played($event)" (plyrPause)="paused($event)" (plyrEnded)="ended($event)"></plyr>
-  <div class="session-player__description">{{ session?.description }}</div>
-  <div class="session-player__classpapers">
-    <h2 class="session-player__doc">Documents</h2>          
-    <ng-container *ngFor="let cp of classPapers">
-      <div class="pp_pdf">
-        <span class="text-attach">{{cp.title}}</span>
-        <a mat-raised-button class="btn-attach" href="{{serverFileURL + cp.path}}">
-          <mat-icon>attach_file</mat-icon>
-        </a>
-      </div>
-    </ng-container>    
-  </div>
+    <div class="session-player__video">
+        <video id="my-player" class="video-js vjs-theme-city" controls preload="auto" data-setup='{"controls":true}'>
+            <p class="vjs-no-js">
+                Pour voir cette video, activez JavaScript, et pensez à installer un navigateur
+                <a href="https://videojs.com/html5-video-support/" target="_blank">supportant la video HTML 5</a>
+            </p>
+        </video>
+    </div>
+    <div class="session-player__description">{{ session?.description }}</div>
+    <div class="session-player__classpapers">
+        <h2 class="session-player__doc">Documents</h2>
+        <ng-container *ngFor="let cp of classPapers">
+            <div class="pp_pdf">
+                <span class="text-attach">{{cp.title}}</span>
+                <a mat-raised-button class="btn-attach" href="{{serverFileURL + cp.path}}">
+                    <mat-icon>attach_file</mat-icon>
+                </a>
+            </div>
+        </ng-container>
+    </div>
 </div>
