@@ -85,9 +85,13 @@ export class SessionPlayersComponent implements OnInit, AfterViewInit, OnDestroy
     ngAfterViewInit() {
         const options = {
             sources: [{
-                src: 'http://localhost:8080/player/mathetimatics/2020/rc/session-34/video.714930560.mpd',
+                src: 'http://localhost:8081/player/mathetimatics/2020/rc/session-34/video.714930560.mpd',
                 type: 'application/dash+xml',
             }],
+            // sources: [{
+            //     src: 'http://localhost:8180/player/mathetimatics/2020/rc/session-34/video.714930560-video-avc1.mp4',
+            //     type: 'video/mp4'
+            // }]
         };
         this.vjs = videojs('my-player', options);
 
